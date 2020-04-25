@@ -75,23 +75,23 @@ lst_verbose <- function(expr, ...) {
 }
 lst_verbose(c(x, y), x = 1:10, y = x:5, x < 2)
 #>  [1] "{"                                                       
-#>  [2] "    res <- new.env()"                                    
+#>  [2] "    res <- fastmap::fastmap()"                           
 #>  [3] "    i_____ <- 1"                                         
 #>  [4] "    iter_____x <- 1:10"                                  
 #>  [5] "    for (x in iter_____x) {"                             
 #>  [6] "        for (y in x:5) {"                                
 #>  [7] "            {"                                           
 #>  [8] "                if (!(x < 2)) {"                         
-#>  [9] "                  next"                                  
+#>  [9] "                  (next)()"                              
 #> [10] "                }"                                       
 #> [11] "                {"                                       
-#> [12] "                  res[[as.character(i_____)]] <- c(x, y)"
+#> [12] "                  res$set(as.character(i_____), c(x, y))"
 #> [13] "                  i_____ <- i_____ + 1"                  
 #> [14] "                }"                                       
 #> [15] "            }"                                           
 #> [16] "        }"                                               
 #> [17] "    }"                                                   
-#> [18] "    res <- as.list(res, sorted = FALSE)"                 
+#> [18] "    res <- res$as_list()"                                
 #> [19] "    res <- res[order(as.numeric(names(res)))]"           
 #> [20] "    names(res) <- NULL"                                  
 #> [21] "    res"                                                 
@@ -135,10 +135,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a           42.33ms  46.01ms     21.3      142KB     5.81
-#> 2 b           14.29ms  17.02ms     54.9      142KB    11.8 
-#> 3 c          839.06ms 839.06ms      1.19      280B     8.34
-#> 4 d            2.44ms   2.87ms    278.        280B     7.95
+#> 1 a           43.17ms  46.48ms    21.1       134KB     3.83
+#> 2 b           14.95ms  30.24ms    31.6       140KB     7.44
+#> 3 c             1.03s    1.03s     0.971      608B     5.83
+#> 4 d            2.65ms   4.13ms   194.         608B     5.99
 ```
 
 How slow is it compared to a for loop and lapply?
@@ -161,8 +161,8 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          8.66   9.81       73.9    86.6KB    13.2 
-#> 2 b          1.34   1.61      480.       280B     8.81
-#> 3 c          0.522  0.595    1282.     88.1KB    17.7 
-#> 4 d          3.24   3.44      253.     42.6KB    16.0
+#> 1 a          8.55   9.19       97.7    84.5KB     15.4
+#> 2 b          1.46   1.55      554.       608B     13.2
+#> 3 c          0.523  0.566    1566.     88.1KB     21.8
+#> 4 d          3.24   3.45      244.    124.2KB     13.7
 ```

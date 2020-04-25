@@ -9,13 +9,13 @@ lst(element_expr, ..., .compile = TRUE)
 \arguments{
 \item{element_expr}{an expression that will be collected}
 
-\item{...}{either logical expression or a named parameter with an iterable
+\item{...}{either logical expressions or a named parameters with an iterable
 sequence.}
 
 \item{.compile}{compile the resulting for loop to bytecode befor eval}
 }
 \description{
-Syntactic sugar for for loops
+Syntactic sugar for for-loops
 }
 \examples{
 lst(c(x, y), x = 1:10, y = 1:10, x + y == 10, x < y)

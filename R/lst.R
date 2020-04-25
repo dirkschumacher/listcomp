@@ -30,10 +30,7 @@ translate <- function(element_expr, quosures) {
   is_index <- quo_names != ""
   start_val <- rlang::get_expr(
     rlang::quo({
-      `<-`(
-        res[[as.character(i_____)]],
-        !!rlang::get_expr(element_expr)
-      )
+      res$set(as.character(i_____), !!rlang::get_expr(element_expr))
       i_____ <- i_____ + 1
     })
   )
@@ -80,11 +77,11 @@ translate <- function(element_expr, quosures) {
   # https://stackoverflow.com/a/29482211/2798441
   rlang::get_expr(
     rlang::quo({
-      res <- new.env()
+      res <- fastmap::fastmap()
       i_____ <- 1
       !!!top_level_assignments
       !!loop
-      res <- as.list(res, sorted = FALSE)
+      res <- res$as_list()
       res <- res[order(as.numeric(names(res)))]
       names(res) <- NULL
       res

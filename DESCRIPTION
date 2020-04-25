@@ -16,6 +16,7 @@ Suggests:
     testthat
 Imports: 
     rlang,
-    compiler
+    compiler,
+    fastmap
 URL: https://github.com/dirkschumacher/complst
 BugReports: https://github.com/dirkschumacher/complst/issues
