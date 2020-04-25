@@ -17,3 +17,5 @@ Suggests:
 Imports: 
     rlang,
     compiler
+URL: https://github.com/dirkschumacher/complst
+BugReports: https://github.com/dirkschumacher/complst/issues
