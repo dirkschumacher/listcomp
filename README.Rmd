@@ -1,0 +1,90 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+# List comprehensions
+
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+<!-- badges: end -->
+
+The package implements [list comprehensions](https://en.wikipedia.org/wiki/List_comprehension) as purely syntactic sugar with a minor runtime overhead. It constructs nested for-loops and executes the byte-compiled loops to collect the results.
+
+**Experimental and WIP**
+
+## Installation
+
+``` r
+remotes::install_github("dirkschumacher/complst")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(complst)
+head(lst(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y))
+```
+
+```{r}
+lst(c(x, y), x = 1:10, y = x:5, x < 2)
+```
+
+This is how the code looks like:
+```{r}
+lst_verbose <- function(expr, ...) {
+  deparse(complst:::translate(rlang::enquo(expr), rlang::enquos(...)))
+}
+lst_verbose(c(x, y), x = 1:10, y = x:5, x < 2)
+```
+
+You can also burn in external variables
+```{r}
+z <- 10
+lst(c(x, y), x = 1:!!z, y = x:5, x < 2)
+```
+
+
+It is quite fast, but the order of filter conditions also greatly determines the execution time.
+Sometimes, ahead of time compiling is slower than running it right away.
+
+```{r}
+bench::mark(
+  a = lst(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y),
+  b = lst(c(x, y), x = 1:100, x < 5, y = 1:100, y < 5, z = 1:100, z == x + y),
+  c = lst(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y, .compile = FALSE),
+  d = lst(c(x, y), x = 1:100, x < 5, y = 1:100, y < 5, z = 1:100, z == x + y, .compile = FALSE)
+)
+```
+
+How slow is it compared to a for loop and lapply?
+
+```{r}
+bench::mark(
+  a = lst(x * 2, x = 1:1000, x**2 < 100),
+  b = lst(x * 2, x = 1:1000, x**2 < 100, .compile = FALSE),
+  c = lapply(Filter(function(x) x**2 < 100, 1:1000), function(x) x * 2),
+  d = {
+    res <- list()
+    for (x in 1:1000) {
+      if (x**2 >= 100) next
+      res[[length(res) + 1]] <- x * 2
+    }
+    res
+  }, 
+  time_unit = "ms"
+)
+```
+
+
