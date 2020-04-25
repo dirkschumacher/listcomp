@@ -29,7 +29,7 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(complst)
-head(lst(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y))
+head(gen_list(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y))
 #> [[1]]
 #> [1] 1 1
 #> 
@@ -50,7 +50,7 @@ head(lst(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y))
 ```
 
 ``` r
-lst(c(x, y), x = 1:10, y = x:5, x < 2)
+gen_list(c(x, y), x = 1:10, y = x:5, x < 2)
 #> [[1]]
 #> [1] 1 1
 #> 
@@ -82,7 +82,7 @@ lst_verbose(c(x, y), x = 1:10, y = x:5, x < 2)
 #>  [6] "        for (y in x:5) {"                                
 #>  [7] "            {"                                           
 #>  [8] "                if (!(x < 2)) {"                         
-#>  [9] "                  (next)()"                              
+#>  [9] "                  next"                                  
 #> [10] "                }"                                       
 #> [11] "                {"                                       
 #> [12] "                  res$set(as.character(i_____), c(x, y))"
@@ -91,7 +91,7 @@ lst_verbose(c(x, y), x = 1:10, y = x:5, x < 2)
 #> [15] "            }"                                           
 #> [16] "        }"                                               
 #> [17] "    }"                                                   
-#> [18] "    res <- res$as_list()"                                
+#> [18] "    res <- res$as_list(sort = FALSE)"                    
 #> [19] "    res <- res[order(as.numeric(names(res)))]"           
 #> [20] "    names(res) <- NULL"                                  
 #> [21] "    res"                                                 
@@ -102,7 +102,7 @@ You can also burn in external variables
 
 ``` r
 z <- 10
-lst(c(x, y), x = 1:!!z, y = x:5, x < 2)
+gen_list(c(x, y), x = 1:!!z, y = x:5, x < 2)
 #> [[1]]
 #> [1] 1 1
 #> 
@@ -125,28 +125,28 @@ slower than running it right away.
 
 ``` r
 bench::mark(
-  a = lst(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y),
-  b = lst(c(x, y), x = 1:100, x < 5, y = 1:100, y < 5, z = 1:100, z == x + y),
-  c = lst(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y, .compile = FALSE),
-  d = lst(c(x, y), x = 1:100, x < 5, y = 1:100, y < 5, z = 1:100, z == x + y, .compile = FALSE)
+  a = gen_list(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y),
+  b = gen_list(c(x, y), x = 1:100, x < 5, y = 1:100, y < 5, z = 1:100, z == x + y),
+  c = gen_list(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y, .compile = FALSE),
+  d = gen_list(c(x, y), x = 1:100, x < 5, y = 1:100, y < 5, z = 1:100, z == x + y, .compile = FALSE)
 )
 #> Warning: Some expressions had a GC in every iteration; so filtering is
 #> disabled.
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a           43.17ms  46.48ms    21.1       134KB     3.83
-#> 2 b           14.95ms  30.24ms    31.6       140KB     7.44
-#> 3 c             1.03s    1.03s     0.971      608B     5.83
-#> 4 d            2.65ms   4.13ms   194.         608B     5.99
+#> 1 a           45.48ms  74.97ms     13.2      139KB     1.89
+#> 2 b            13.8ms  22.89ms     35.2      139KB     7.83
+#> 3 c           729.2ms  729.2ms      1.37      888B     8.23
+#> 4 d            2.02ms   2.21ms    391.        888B     9.97
 ```
 
 How slow is it compared to a for loop and lapply?
 
 ``` r
 bench::mark(
-  a = lst(x * 2, x = 1:1000, x**2 < 100),
-  b = lst(x * 2, x = 1:1000, x**2 < 100, .compile = FALSE),
+  a = gen_list(x * 2, x = 1:1000, x**2 < 100),
+  b = gen_list(x * 2, x = 1:1000, x**2 < 100, .compile = FALSE),
   c = lapply(Filter(function(x) x**2 < 100, 1:1000), function(x) x * 2),
   d = {
     res <- list()
@@ -161,8 +161,13 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          8.55   9.19       97.7    84.5KB     15.4
-#> 2 b          1.46   1.55      554.       608B     13.2
-#> 3 c          0.523  0.566    1566.     88.1KB     21.8
-#> 4 d          3.24   3.45      244.    124.2KB     13.7
+#> 1 a          8.49  10.5        86.4      79KB     14.4
+#> 2 b          1.18   1.44      571.       888B     10.9
+#> 3 c          0.525  0.580    1514.     88.1KB     21.9
+#> 4 d          3.28   3.49      243.    124.2KB     13.6
 ```
+
+# Prior art
+
+  - [lc](https://github.com/mailund/lc)
+  - [comprehenr](https://github.com/gdemin/comprehenr)

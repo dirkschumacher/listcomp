@@ -34,11 +34,11 @@ This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
 library(complst)
-head(lst(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y))
+head(gen_list(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y))
 ```
 
 ```{r}
-lst(c(x, y), x = 1:10, y = x:5, x < 2)
+gen_list(c(x, y), x = 1:10, y = x:5, x < 2)
 ```
 
 This is how the code looks like:
@@ -52,7 +52,7 @@ lst_verbose(c(x, y), x = 1:10, y = x:5, x < 2)
 You can also burn in external variables
 ```{r}
 z <- 10
-lst(c(x, y), x = 1:!!z, y = x:5, x < 2)
+gen_list(c(x, y), x = 1:!!z, y = x:5, x < 2)
 ```
 
 
@@ -61,10 +61,10 @@ Sometimes, ahead of time compiling is slower than running it right away.
 
 ```{r}
 bench::mark(
-  a = lst(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y),
-  b = lst(c(x, y), x = 1:100, x < 5, y = 1:100, y < 5, z = 1:100, z == x + y),
-  c = lst(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y, .compile = FALSE),
-  d = lst(c(x, y), x = 1:100, x < 5, y = 1:100, y < 5, z = 1:100, z == x + y, .compile = FALSE)
+  a = gen_list(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y),
+  b = gen_list(c(x, y), x = 1:100, x < 5, y = 1:100, y < 5, z = 1:100, z == x + y),
+  c = gen_list(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y, .compile = FALSE),
+  d = gen_list(c(x, y), x = 1:100, x < 5, y = 1:100, y < 5, z = 1:100, z == x + y, .compile = FALSE)
 )
 ```
 
@@ -72,8 +72,8 @@ How slow is it compared to a for loop and lapply?
 
 ```{r}
 bench::mark(
-  a = lst(x * 2, x = 1:1000, x**2 < 100),
-  b = lst(x * 2, x = 1:1000, x**2 < 100, .compile = FALSE),
+  a = gen_list(x * 2, x = 1:1000, x**2 < 100),
+  b = gen_list(x * 2, x = 1:1000, x**2 < 100, .compile = FALSE),
   c = lapply(Filter(function(x) x**2 < 100, 1:1000), function(x) x * 2),
   d = {
     res <- list()
@@ -87,4 +87,8 @@ bench::mark(
 )
 ```
 
+# Prior art
+
+* [lc](https://github.com/mailund/lc)
+* [comprehenr](https://github.com/gdemin/comprehenr)
 
