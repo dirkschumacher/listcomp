@@ -56,7 +56,7 @@ translate <- function(element_expr, quosures) {
       } else {
         rlang::get_expr(rlang::quo({
           if (!((!!quosure))) {
-            !!(parse(text = "next()")[[1]]) # for R CMD check
+            !!next_call # for R CMD check
           }
           !!acc
         }))
@@ -73,8 +73,8 @@ translate <- function(element_expr, quosures) {
     }, quosures[!has_symbols & is_index],
     quo_names[!has_symbols & is_index]
   )
-  # uses environments for list contruction
-  # https://stackoverflow.com/a/29482211/2798441
+  # uses hashmaps for list contruction
+  # idea from here: https://stackoverflow.com/a/29482211/2798441
   rlang::get_expr(
     rlang::quo({
       res <- fastmap::fastmap()
@@ -88,6 +88,8 @@ translate <- function(element_expr, quosures) {
     })
   )
 }
+
+next_call <- parse(text = "next()")[[1]]
 
 iter_symbol_name <- function(name) {
   as.symbol(paste0("iter_____", name))
