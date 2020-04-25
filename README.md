@@ -7,6 +7,8 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![R build
+status](https://github.com/dirkschumacher/complst/workflows/R-CMD-check/badge.svg)](https://github.com/dirkschumacher/complst/actions)
 <!-- badges: end -->
 
 The package implements [list
@@ -135,10 +137,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a           45.48ms  74.97ms     13.2      139KB     1.89
-#> 2 b            13.8ms  22.89ms     35.2      139KB     7.83
-#> 3 c           729.2ms  729.2ms      1.37      888B     8.23
-#> 4 d            2.02ms   2.21ms    391.        888B     9.97
+#> 1 a           68.33ms  87.74ms    10.7       139KB     1.78
+#> 2 b           17.46ms  38.33ms    23.4       139KB     3.60
+#> 3 c             1.62s    1.62s     0.616      888B     4.31
+#> 4 d            2.27ms   5.55ms   154.         888B     3.95
 ```
 
 How slow is it compared to a for loop and lapply?
@@ -159,12 +161,12 @@ bench::mark(
   time_unit = "ms"
 )
 #> # A tibble: 4 x 6
-#>   expression   min median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          8.49  10.5        86.4      79KB     14.4
-#> 2 b          1.18   1.44      571.       888B     10.9
-#> 3 c          0.525  0.580    1514.     88.1KB     21.9
-#> 4 d          3.28   3.49      243.    124.2KB     13.6
+#>   expression    min median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr>  <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
+#> 1 a          10.3   20.9        44.0      79KB     6.94
+#> 2 b           1.38   2.57      327.       888B     6.37
+#> 3 c           0.544  0.810     986.     88.1KB    13.3 
+#> 4 d           3.34   6.30      116.    124.2KB     7.09
 ```
 
 # Prior art
