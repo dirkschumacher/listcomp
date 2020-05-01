@@ -1,9 +1,13 @@
 #' List comprehensions
 #'
-#' Syntactic sugar for for-loops
+#' Syntactic sugar for for-loops.
+#'
+#' @details
+#' The API can still evolve and it is recommend to only use the package when
+#' you can tolerate changes in the API (e.g. in interactive analyses).
 #'
 #' @param element_expr an expression that will be collected
-#' @param ... either logical expressions or a named parameters with an iterable
+#' @param ... either logical expressions or named parameters with an iterable
 #'   sequence.
 #' @param .compile compile the resulting for loop to bytecode befor eval
 #'
@@ -28,13 +32,14 @@ translate <- function(element_expr, quosures) {
   is_index <- quo_names != ""
   start_val <- get_expr(
     quo({
-      res$set(as.character(i_____), !!get_expr(element_expr))
+      res_____$set(as.character(i_____), !!get_expr(element_expr))
       i_____ <- i_____ + 1
     })
   )
   has_symbols <- vapply(quosures, function(x) {
     length(all.vars(get_expr(x))) > 0
   }, logical(1L))
+  for_symbol <- as.symbol("for") # to prevent a codetools bug
   loop <- Reduce(
     f = function(acc, i) {
       quosure <- get_expr(quosures[[i]])
@@ -47,7 +52,7 @@ translate <- function(element_expr, quosures) {
           iter_symbol_name(name)
         }
         get_expr(quo(
-          `for`(!!as.symbol(name), !!iter_name, {
+          (!!for_symbol)(!!as.symbol(name), !!iter_name, {
             !!acc
           })
         ))
@@ -63,24 +68,26 @@ translate <- function(element_expr, quosures) {
     x = rev(seq_along(quosures)),
     init = start_val
   )
-  loop <- get_expr(loop)
+  assignment_symbol <- as.symbol("<-") # for codetools
   top_level_assignments <- mapply(
     function(val, name) {
       s <- iter_symbol_name(name)
-      get_expr(quo(`<-`(!!s, !!get_expr(val))))
-    }, quosures[!has_symbols & is_index],
+      get_expr(quo((!!assignment_symbol)(!!s, !!get_expr(val))))
+    },
+    quosures[!has_symbols & is_index],
     quo_names[!has_symbols & is_index]
   )
+  loop <- get_expr(loop)
   get_expr(
     quo({
-      res <- fastmap::fastmap()
+      res_____ <- fastmap::fastmap()
       i_____ <- 1
       !!!top_level_assignments
       !!loop
-      res <- res$as_list(sort = FALSE)
-      res <- res[order(as.numeric(names(res)))] # need to sort by numeric
-      names(res) <- NULL
-      res
+      res_____ <- res_____$as_list(sort = FALSE)
+      res_____ <- res_____[order(as.numeric(names(res_____)))]
+      names(res_____) <- NULL
+      res_____
     })
   )
 }

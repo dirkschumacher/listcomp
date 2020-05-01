@@ -17,8 +17,6 @@ purely syntactic sugar with a minor runtime overhead. It constructs
 nested for-loops and executes the byte-compiled loops to collect the
 results.
 
-**Experimental and WIP**
-
 ## Installation
 
 ``` r

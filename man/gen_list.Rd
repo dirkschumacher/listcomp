@@ -9,13 +9,17 @@ gen_list(element_expr, ..., .compile = TRUE)
 \arguments{
 \item{element_expr}{an expression that will be collected}
 
-\item{...}{either logical expressions or a named parameters with an iterable
+\item{...}{either logical expressions or named parameters with an iterable
 sequence.}
 
 \item{.compile}{compile the resulting for loop to bytecode befor eval}
 }
 \description{
-Syntactic sugar for for-loops
+Syntactic sugar for for-loops.
+}
+\details{
+The API can still evolve and it is recommend to only use the package when
+you can tolerate changes in the API (e.g. in interactive analyses).
 }
 \examples{
 gen_list(c(x, y), x = 1:10, y = 1:10, x + y == 10, x < y)

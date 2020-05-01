@@ -1,4 +1,4 @@
 library(testthat)
-library(complst)
+library(listcomp)
 
-test_check("complst")
+test_check("listcomp")
