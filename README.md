@@ -8,7 +8,7 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![R build
-status](https://github.com/dirkschumacher/complst/workflows/R-CMD-check/badge.svg)](https://github.com/dirkschumacher/complst/actions)
+status](https://github.com/dirkschumacher/listcomp/workflows/R-CMD-check/badge.svg)](https://github.com/dirkschumacher/listcomp/actions)
 <!-- badges: end -->
 
 The package implements [list
@@ -20,7 +20,7 @@ results.
 ## Installation
 
 ``` r
-remotes::install_github("dirkschumacher/complst")
+remotes::install_github("dirkschumacher/listcomp")
 ```
 
 ## Example
@@ -28,7 +28,7 @@ remotes::install_github("dirkschumacher/complst")
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-library(complst)
+library(listcomp)
 head(gen_list(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y))
 #> [[1]]
 #> [1] 1 1
@@ -71,30 +71,30 @@ This is how the code looks like:
 
 ``` r
 lst_verbose <- function(expr, ...) {
-  deparse(complst:::translate(rlang::enquo(expr), rlang::enquos(...)))
+  deparse(listcomp:::translate(rlang::enquo(expr), rlang::enquos(...)))
 }
 lst_verbose(c(x, y), x = 1:10, y = x:5, x < 2)
-#>  [1] "{"                                                       
-#>  [2] "    res <- fastmap::fastmap()"                           
-#>  [3] "    i_____ <- 1"                                         
-#>  [4] "    iter_____x <- 1:10"                                  
-#>  [5] "    for (x in iter_____x) {"                             
-#>  [6] "        for (y in x:5) {"                                
-#>  [7] "            {"                                           
-#>  [8] "                if (!(x < 2)) {"                         
-#>  [9] "                  next"                                  
-#> [10] "                }"                                       
-#> [11] "                {"                                       
-#> [12] "                  res$set(as.character(i_____), c(x, y))"
-#> [13] "                  i_____ <- i_____ + 1"                  
-#> [14] "                }"                                       
-#> [15] "            }"                                           
-#> [16] "        }"                                               
-#> [17] "    }"                                                   
-#> [18] "    res <- res$as_list(sort = FALSE)"                    
-#> [19] "    res <- res[order(as.numeric(names(res)))]"           
-#> [20] "    names(res) <- NULL"                                  
-#> [21] "    res"                                                 
+#>  [1] "{"                                                            
+#>  [2] "    res_____ <- fastmap::fastmap()"                           
+#>  [3] "    i_____ <- 1"                                              
+#>  [4] "    iter_____x <- 1:10"                                       
+#>  [5] "    for (x in iter_____x) {"                                  
+#>  [6] "        for (y in x:5) {"                                     
+#>  [7] "            {"                                                
+#>  [8] "                if (!(x < 2)) {"                              
+#>  [9] "                  next"                                       
+#> [10] "                }"                                            
+#> [11] "                {"                                            
+#> [12] "                  res_____$set(as.character(i_____), c(x, y))"
+#> [13] "                  i_____ <- i_____ + 1"                       
+#> [14] "                }"                                            
+#> [15] "            }"                                                
+#> [16] "        }"                                                    
+#> [17] "    }"                                                        
+#> [18] "    res_____ <- res_____$as_list(sort = FALSE)"               
+#> [19] "    res_____ <- res_____[order(as.numeric(names(res_____)))]" 
+#> [20] "    names(res_____) <- NULL"                                  
+#> [21] "    res_____"                                                 
 #> [22] "}"
 ```
 
@@ -130,18 +130,18 @@ bench::mark(
   c = gen_list(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y, .compile = FALSE),
   d = gen_list(c(x, y), x = 1:100, x < 5, y = 1:100, y < 5, z = 1:100, z == x + y, .compile = FALSE)
 )
-#> Warning: Some expressions had a GC in every iteration; so filtering is
-#> disabled.
+#> Warning: Some expressions had a GC in every iteration; so filtering is disabled.
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a           68.33ms  87.74ms    10.7       139KB     1.78
-#> 2 b           17.46ms  38.33ms    23.4       139KB     3.60
-#> 3 c             1.62s    1.62s     0.616      888B     4.31
-#> 4 d            2.27ms   5.55ms   154.         888B     3.95
+#> 1 a           44.38ms   52.2ms     19.3      139KB     3.86
+#> 2 b           15.93ms  19.41ms     43.4      139KB     9.42
+#> 3 c          730.74ms 730.74ms      1.37      888B     8.21
+#> 4 d            2.12ms   2.31ms    349.        888B     9.97
 ```
 
-How slow is it compared to a for loop and lapply?
+How slow is it compared to a for loop and lapply for a very simple
+example?
 
 ``` r
 bench::mark(
@@ -159,12 +159,12 @@ bench::mark(
   time_unit = "ms"
 )
 #> # A tibble: 4 x 6
-#>   expression    min median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr>  <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          10.3   20.9        44.0      79KB     6.94
-#> 2 b           1.38   2.57      327.       888B     6.37
-#> 3 c           0.544  0.810     986.     88.1KB    13.3 
-#> 4 d           3.34   6.30      116.    124.2KB     7.09
+#>   expression   min median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
+#> 1 a          9.52  10.1        81.4      79KB     14.8
+#> 2 b          1.24   1.35      611.       888B     10.8
+#> 3 c          0.583  0.624    1419.     88.1KB     20.0
+#> 4 d          3.83   4.08      201.    125.9KB     13.6
 ```
 
 # Prior art

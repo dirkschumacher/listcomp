@@ -16,17 +16,15 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![R build status](https://github.com/dirkschumacher/complst/workflows/R-CMD-check/badge.svg)](https://github.com/dirkschumacher/complst/actions)
+[![R build status](https://github.com/dirkschumacher/listcomp/workflows/R-CMD-check/badge.svg)](https://github.com/dirkschumacher/listcomp/actions)
 <!-- badges: end -->
 
 The package implements [list comprehensions](https://en.wikipedia.org/wiki/List_comprehension) as purely syntactic sugar with a minor runtime overhead. It constructs nested for-loops and executes the byte-compiled loops to collect the results.
 
-**Experimental and WIP**
-
 ## Installation
 
 ``` r
-remotes::install_github("dirkschumacher/complst")
+remotes::install_github("dirkschumacher/listcomp")
 ```
 
 ## Example
@@ -34,7 +32,7 @@ remotes::install_github("dirkschumacher/complst")
 This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
-library(complst)
+library(listcomp)
 head(gen_list(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y))
 ```
 
@@ -45,7 +43,7 @@ gen_list(c(x, y), x = 1:10, y = x:5, x < 2)
 This is how the code looks like:
 ```{r}
 lst_verbose <- function(expr, ...) {
-  deparse(complst:::translate(rlang::enquo(expr), rlang::enquos(...)))
+  deparse(listcomp:::translate(rlang::enquo(expr), rlang::enquos(...)))
 }
 lst_verbose(c(x, y), x = 1:10, y = x:5, x < 2)
 ```
@@ -69,7 +67,7 @@ bench::mark(
 )
 ```
 
-How slow is it compared to a for loop and lapply?
+How slow is it compared to a for loop and lapply for a very simple example?
 
 ```{r}
 bench::mark(
