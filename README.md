@@ -25,6 +25,10 @@ results.
 remotes::install_github("dirkschumacher/listcomp")
 ```
 
+``` r
+install.packages("listcomp")
+```
+
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
@@ -125,10 +129,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a           45.21ms  49.32ms     20.2      112KB     5.50
-#> 2 b           12.62ms  16.72ms     58.2      112KB     9.69
-#> 3 c          663.89ms 663.89ms      1.51      280B    10.5 
-#> 4 d            1.86ms   2.19ms    415.        280B     9.99
+#> 1 a           39.43ms  41.24ms     22.9      112KB     5.73
+#> 2 b           12.16ms  12.77ms     70.6      112KB    11.8 
+#> 3 c          587.61ms 587.61ms      1.70      280B    11.9 
+#> 4 d            1.81ms   1.91ms    469.        280B    13.9
 ```
 
 How slow is it compared to a for loop and lapply for a very simple
@@ -152,10 +156,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          6.43   8.25       118.    56.7KB     13.9
-#> 2 b          1.07   1.41       677.      280B     10.9
-#> 3 c          0.795  1.01       946.    15.8KB     27.2
-#> 4 d          0.443  0.524     1808.        0B     19.6
+#> 1 a          6.29   6.69       143.    56.7KB     16.7
+#> 2 b          1.03   1.08       869.      280B     14.9
+#> 3 c          0.791  0.854     1132.    15.8KB     31.7
+#> 4 d          0.440  0.465     2060.        0B     21.7
 ```
 
 # Prior art
