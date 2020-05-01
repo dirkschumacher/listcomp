@@ -123,10 +123,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a            42.2ms  47.88ms     21.3      116KB     3.87
-#> 2 b            12.1ms  27.66ms     19.3      116KB     3.86
-#> 3 c           750.5ms 750.52ms      1.33      280B     7.99
-#> 4 d             1.7ms   1.95ms    387.        280B     9.98
+#> 1 a            39.6ms  49.32ms     19.9      116KB     3.99
+#> 2 b              12ms  13.95ms     63.3      116KB     9.88
+#> 3 c           659.8ms 659.78ms      1.52      280B    10.6 
+#> 4 d             1.7ms   1.84ms    459.        280B    12.0
 ```
 
 How slow is it compared to a for loop and lapply for a very simple
@@ -150,10 +150,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          6.31   7.28      118.     59.2KB    11.2 
-#> 2 b          0.982  1.08      743.       280B    15.4 
-#> 3 c          0.587  0.698    1075.     88.1KB    13.4 
-#> 4 d          3.97   9.76       74.3    44.4KB     5.71
+#> 1 a          6.19   7.17       101.    59.2KB     11.2
+#> 2 b          0.969  1.03       826.      280B     15.9
+#> 3 c          0.586  0.634     1417.    88.1KB     20.0
+#> 4 d          3.84   4.09       202.    44.4KB     11.0
 ```
 
 # Prior art
