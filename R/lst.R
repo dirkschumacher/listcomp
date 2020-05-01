@@ -32,8 +32,7 @@ translate <- function(element_expr, quosures) {
   is_index <- quo_names != ""
   start_val <- get_expr(
     quo({
-      res_____[[i_____]] <- !!get_expr(element_expr)
-      i_____ <- i_____ + 1
+      res_____[[length(res_____) + 1]] <- !!get_expr(element_expr)
     })
   )
   has_symbols <- vapply(quosures, function(x) {
@@ -81,7 +80,6 @@ translate <- function(element_expr, quosures) {
   get_expr(
     quo({
       res_____ <- list()
-      i_____ <- 1
       !!!top_level_assignments
       !!loop
       res_____

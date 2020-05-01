@@ -6,7 +6,7 @@ Authors@R:
            family = "Schumacher",
            role = c("aut", "cre"),
            email = "mail@dirk-schumacher.net")
-Description: The package implements list comprehensions as purely syntactic
+Description: An implementation of list comprehensions as purely syntactic
   sugar with a minor runtime overhead. It constructs nested for-loops and
   executes the byte-compiled loops to collect the results.
 License: MIT + file LICENSE
