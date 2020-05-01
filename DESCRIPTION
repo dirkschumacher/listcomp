@@ -18,7 +18,6 @@ Suggests:
     testthat
 Imports: 
     rlang,
-    compiler,
-    fastmap
+    compiler
 URL: https://github.com/dirkschumacher/listcomp
 BugReports: https://github.com/dirkschumacher/listcomp/issues

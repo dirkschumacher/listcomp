@@ -74,28 +74,25 @@ lst_verbose <- function(expr, ...) {
   deparse(listcomp:::translate(rlang::enquo(expr), rlang::enquos(...)))
 }
 lst_verbose(c(x, y), x = 1:10, y = x:5, x < 2)
-#>  [1] "{"                                                            
-#>  [2] "    res_____ <- fastmap::fastmap()"                           
-#>  [3] "    i_____ <- 1"                                              
-#>  [4] "    iter_____x <- 1:10"                                       
-#>  [5] "    for (x in iter_____x) {"                                  
-#>  [6] "        for (y in x:5) {"                                     
-#>  [7] "            {"                                                
-#>  [8] "                if (!(x < 2)) {"                              
-#>  [9] "                  next"                                       
-#> [10] "                }"                                            
-#> [11] "                {"                                            
-#> [12] "                  res_____$set(as.character(i_____), c(x, y))"
-#> [13] "                  i_____ <- i_____ + 1"                       
-#> [14] "                }"                                            
-#> [15] "            }"                                                
-#> [16] "        }"                                                    
-#> [17] "    }"                                                        
-#> [18] "    res_____ <- res_____$as_list(sort = FALSE)"               
-#> [19] "    res_____ <- res_____[order(as.numeric(names(res_____)))]" 
-#> [20] "    names(res_____) <- NULL"                                  
-#> [21] "    res_____"                                                 
-#> [22] "}"
+#>  [1] "{"                                              
+#>  [2] "    res_____ <- list()"                         
+#>  [3] "    i_____ <- 1"                                
+#>  [4] "    iter_____x <- 1:10"                         
+#>  [5] "    for (x in iter_____x) {"                    
+#>  [6] "        for (y in x:5) {"                       
+#>  [7] "            {"                                  
+#>  [8] "                if (!(x < 2)) {"                
+#>  [9] "                  next"                         
+#> [10] "                }"                              
+#> [11] "                {"                              
+#> [12] "                  res_____[[i_____]] <- c(x, y)"
+#> [13] "                  i_____ <- i_____ + 1"         
+#> [14] "                }"                              
+#> [15] "            }"                                  
+#> [16] "        }"                                      
+#> [17] "    }"                                          
+#> [18] "    res_____"                                   
+#> [19] "}"
 ```
 
 You can also burn in external variables
@@ -134,10 +131,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a           44.38ms   52.2ms     19.3      139KB     3.86
-#> 2 b           15.93ms  19.41ms     43.4      139KB     9.42
-#> 3 c          730.74ms 730.74ms      1.37      888B     8.21
-#> 4 d            2.12ms   2.31ms    349.        888B     9.97
+#> 1 a           40.69ms   44.1ms     22.0      124KB     3.99
+#> 2 b           12.86ms   15.7ms     55.4      124KB    11.9 
+#> 3 c          680.85ms  680.8ms      1.47      280B     8.81
+#> 4 d            1.87ms      2ms    428.        280B    11.9
 ```
 
 How slow is it compared to a for loop and lapply for a very simple
@@ -161,10 +158,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          9.52  10.1        81.4      79KB     14.8
-#> 2 b          1.24   1.35      611.       888B     10.8
-#> 3 c          0.583  0.624    1419.     88.1KB     20.0
-#> 4 d          3.83   4.08      201.    125.9KB     13.6
+#> 1 a          6.81   7.34       121.    63.9KB     14.3
+#> 2 b          1.05   1.12       790.      280B     12.8
+#> 3 c          0.583  0.625     1448.    88.1KB     22.5
+#> 4 d          3.78   4.02       206.    44.4KB     10.8
 ```
 
 # Prior art

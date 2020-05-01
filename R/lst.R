@@ -32,7 +32,7 @@ translate <- function(element_expr, quosures) {
   is_index <- quo_names != ""
   start_val <- get_expr(
     quo({
-      res_____$set(as.character(i_____), !!get_expr(element_expr))
+      res_____[[i_____]] <- !!get_expr(element_expr)
       i_____ <- i_____ + 1
     })
   )
@@ -80,13 +80,10 @@ translate <- function(element_expr, quosures) {
   loop <- get_expr(loop)
   get_expr(
     quo({
-      res_____ <- fastmap::fastmap()
+      res_____ <- list()
       i_____ <- 1
       !!!top_level_assignments
       !!loop
-      res_____ <- res_____$as_list(sort = FALSE)
-      res_____ <- res_____[order(as.numeric(names(res_____)))]
-      names(res_____) <- NULL
       res_____
     })
   )
