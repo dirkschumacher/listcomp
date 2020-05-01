@@ -9,6 +9,8 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![R build
 status](https://github.com/dirkschumacher/listcomp/workflows/R-CMD-check/badge.svg)](https://github.com/dirkschumacher/listcomp/actions)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/listcomp)](https://CRAN.R-project.org/package=listcomp)
 <!-- badges: end -->
 
 The package implements [list
@@ -123,10 +125,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a           39.53ms  40.42ms     24.2      112KB     5.58
-#> 2 b           11.82ms  12.38ms     73.9      112KB    14.0 
-#> 3 c          589.02ms 589.02ms      1.70      280B    11.9 
-#> 4 d            1.81ms   1.89ms    492.        280B    12.0
+#> 1 a           45.21ms  49.32ms     20.2      112KB     5.50
+#> 2 b           12.62ms  16.72ms     58.2      112KB     9.69
+#> 3 c          663.89ms 663.89ms      1.51      280B    10.5 
+#> 4 d            1.86ms   2.19ms    415.        280B     9.99
 ```
 
 How slow is it compared to a for loop and lapply for a very simple
@@ -150,10 +152,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          6.12   6.47       149.    56.7KB     17.1
-#> 2 b          1.03   1.08       850.      280B     15.0
-#> 3 c          0.790  0.871     1116.    15.8KB     29.3
-#> 4 d          0.443  0.472     2028.        0B     24.0
+#> 1 a          6.43   8.25       118.    56.7KB     13.9
+#> 2 b          1.07   1.41       677.      280B     10.9
+#> 3 c          0.795  1.01       946.    15.8KB     27.2
+#> 4 d          0.443  0.524     1808.        0B     19.6
 ```
 
 # Prior art
