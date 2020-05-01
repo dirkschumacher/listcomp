@@ -74,23 +74,17 @@ lst_verbose <- function(expr, ...) {
   deparse(listcomp:::translate(rlang::enquo(expr), rlang::enquos(...)))
 }
 lst_verbose(c(x, y), x = 1:10, y = x:5, x < 2)
-#>  [1] "{"                                                            
-#>  [2] "    res_____ <- list()"                                       
-#>  [3] "    iter_____x <- 1:10"                                       
-#>  [4] "    for (x in iter_____x) {"                                  
-#>  [5] "        for (y in x:5) {"                                     
-#>  [6] "            {"                                                
-#>  [7] "                if (!(x < 2)) {"                              
-#>  [8] "                  next"                                       
-#>  [9] "                }"                                            
-#> [10] "                {"                                            
-#> [11] "                  res_____[[length(res_____) + 1]] <- c(x, y)"
-#> [12] "                }"                                            
-#> [13] "            }"                                                
-#> [14] "        }"                                                    
-#> [15] "    }"                                                        
-#> [16] "    res_____"                                                 
-#> [17] "}"
+#>  [1] "{"                                                  
+#>  [2] "    res_____ <- list()"                             
+#>  [3] "    iter_____x <- 1:10"                             
+#>  [4] "    for (x in iter_____x) for (y in x:5) {"         
+#>  [5] "        if (!(x < 2)) {"                            
+#>  [6] "            next"                                   
+#>  [7] "        }"                                          
+#>  [8] "        res_____[[length(res_____) + 1]] <- c(x, y)"
+#>  [9] "    }"                                              
+#> [10] "    res_____"                                       
+#> [11] "}"
 ```
 
 You can also burn in external variables
@@ -129,10 +123,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a           41.24ms  43.59ms     21.8      124KB     3.97
-#> 2 b            13.5ms  15.38ms     53.2      124KB     9.85
-#> 3 c           702.1ms  702.1ms      1.42      280B     9.97
-#> 4 d            1.86ms   2.03ms    395.        280B     9.98
+#> 1 a            42.2ms  47.88ms     21.3      116KB     3.87
+#> 2 b            12.1ms  27.66ms     19.3      116KB     3.86
+#> 3 c           750.5ms 750.52ms      1.33      280B     7.99
+#> 4 d             1.7ms   1.95ms    387.        280B     9.98
 ```
 
 How slow is it compared to a for loop and lapply for a very simple
@@ -156,13 +150,15 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          6.67   7.14       122.    63.1KB     12.5
-#> 2 b          1.06   1.18       715.      280B     13.1
-#> 3 c          0.586  0.643     1330.    88.1KB     19.5
-#> 4 d          3.89   4.29       192.    44.4KB     10.9
+#> 1 a          6.31   7.28      118.     59.2KB    11.2 
+#> 2 b          0.982  1.08      743.       280B    15.4 
+#> 3 c          0.587  0.698    1075.     88.1KB    13.4 
+#> 4 d          3.97   9.76       74.3    44.4KB     5.71
 ```
 
 # Prior art
 
-  - [lc](https://github.com/mailund/lc)
-  - [comprehenr](https://github.com/gdemin/comprehenr)
+  - [lc](https://github.com/mailund/lc) Uses a similiar syntax as
+    `complist`
+  - [comprehenr](https://github.com/gdemin/comprehenr) Uses a similiar
+    code generation approach as `complist` but with a different syntax.

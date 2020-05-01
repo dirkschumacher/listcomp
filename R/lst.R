@@ -1,9 +1,10 @@
 #' List comprehensions
 #'
-#' Syntactic sugar for for-loops.
+#' Create lists of elements using an expressive syntax. Internally nested
+#' for-loops are created and compiled that generate the list.
 #'
 #' @details
-#' The API can still evolve and it is recommend to only use the package when
+#' The API can still change and it is recommend to only use the package when
 #' you can tolerate changes in the API (e.g. in interactive analyses).
 #'
 #' @param element_expr an expression that will be collected
@@ -20,7 +21,7 @@
 gen_list <- function(element_expr, ..., .compile = TRUE) {
   code <- translate(enquo(element_expr), enquos(...))
   code <- if (.compile) {
-    compiler::compile(code)
+    compiler::compile(code, env = caller_env())
   } else {
     code
   }
@@ -31,9 +32,7 @@ translate <- function(element_expr, quosures) {
   quo_names <- names(quosures)
   is_index <- quo_names != ""
   start_val <- get_expr(
-    quo({
-      res_____[[length(res_____) + 1]] <- !!get_expr(element_expr)
-    })
+    quo(res_____[[length(res_____) + 1]] <- !!get_expr(element_expr))
   )
   has_symbols <- vapply(quosures, function(x) {
     length(all.vars(get_expr(x))) > 0
@@ -51,9 +50,7 @@ translate <- function(element_expr, quosures) {
           iter_symbol_name(name)
         }
         get_expr(quo(
-          (!!for_symbol)(!!as.symbol(name), !!iter_name, {
-            !!acc
-          })
+          (!!for_symbol)(!!as.symbol(name), !!iter_name, !!acc)
         ))
       } else {
         get_expr(quo({

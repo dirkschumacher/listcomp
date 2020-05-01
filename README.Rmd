@@ -88,6 +88,6 @@ bench::mark(
 
 # Prior art
 
-* [lc](https://github.com/mailund/lc)
-* [comprehenr](https://github.com/gdemin/comprehenr)
+* [lc](https://github.com/mailund/lc) Uses a similiar syntax as `complist`
+* [comprehenr](https://github.com/gdemin/comprehenr) Uses a similiar code generation approach as `complist` but with a different syntax.
 

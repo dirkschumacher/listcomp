@@ -15,10 +15,11 @@ sequence.}
 \item{.compile}{compile the resulting for loop to bytecode befor eval}
 }
 \description{
-Syntactic sugar for for-loops.
+Create lists of elements using an expressive syntax. Internally nested
+for-loops are created and compiled that generate the list.
 }
 \details{
-The API can still evolve and it is recommend to only use the package when
+The API can still change and it is recommend to only use the package when
 you can tolerate changes in the API (e.g. in interactive analyses).
 }
 \examples{
