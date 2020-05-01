@@ -74,25 +74,23 @@ lst_verbose <- function(expr, ...) {
   deparse(listcomp:::translate(rlang::enquo(expr), rlang::enquos(...)))
 }
 lst_verbose(c(x, y), x = 1:10, y = x:5, x < 2)
-#>  [1] "{"                                              
-#>  [2] "    res_____ <- list()"                         
-#>  [3] "    i_____ <- 1"                                
-#>  [4] "    iter_____x <- 1:10"                         
-#>  [5] "    for (x in iter_____x) {"                    
-#>  [6] "        for (y in x:5) {"                       
-#>  [7] "            {"                                  
-#>  [8] "                if (!(x < 2)) {"                
-#>  [9] "                  next"                         
-#> [10] "                }"                              
-#> [11] "                {"                              
-#> [12] "                  res_____[[i_____]] <- c(x, y)"
-#> [13] "                  i_____ <- i_____ + 1"         
-#> [14] "                }"                              
-#> [15] "            }"                                  
-#> [16] "        }"                                      
-#> [17] "    }"                                          
-#> [18] "    res_____"                                   
-#> [19] "}"
+#>  [1] "{"                                                            
+#>  [2] "    res_____ <- list()"                                       
+#>  [3] "    iter_____x <- 1:10"                                       
+#>  [4] "    for (x in iter_____x) {"                                  
+#>  [5] "        for (y in x:5) {"                                     
+#>  [6] "            {"                                                
+#>  [7] "                if (!(x < 2)) {"                              
+#>  [8] "                  next"                                       
+#>  [9] "                }"                                            
+#> [10] "                {"                                            
+#> [11] "                  res_____[[length(res_____) + 1]] <- c(x, y)"
+#> [12] "                }"                                            
+#> [13] "            }"                                                
+#> [14] "        }"                                                    
+#> [15] "    }"                                                        
+#> [16] "    res_____"                                                 
+#> [17] "}"
 ```
 
 You can also burn in external variables
@@ -131,10 +129,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a           40.69ms   44.1ms     22.0      124KB     3.99
-#> 2 b           12.86ms   15.7ms     55.4      124KB    11.9 
-#> 3 c          680.85ms  680.8ms      1.47      280B     8.81
-#> 4 d            1.87ms      2ms    428.        280B    11.9
+#> 1 a           41.24ms  43.59ms     21.8      124KB     3.97
+#> 2 b            13.5ms  15.38ms     53.2      124KB     9.85
+#> 3 c           702.1ms  702.1ms      1.42      280B     9.97
+#> 4 d            1.86ms   2.03ms    395.        280B     9.98
 ```
 
 How slow is it compared to a for loop and lapply for a very simple
@@ -158,10 +156,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          6.81   7.34       121.    63.9KB     14.3
-#> 2 b          1.05   1.12       790.      280B     12.8
-#> 3 c          0.583  0.625     1448.    88.1KB     22.5
-#> 4 d          3.78   4.02       206.    44.4KB     10.8
+#> 1 a          6.67   7.14       122.    63.1KB     12.5
+#> 2 b          1.06   1.18       715.      280B     13.1
+#> 3 c          0.586  0.643     1330.    88.1KB     19.5
+#> 4 d          3.89   4.29       192.    44.4KB     10.9
 ```
 
 # Prior art
