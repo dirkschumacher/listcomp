@@ -14,13 +14,13 @@ sequence.}
 
 \item{.compile}{compile the resulting for loop to bytecode befor eval}
 }
+\value{
+A list of all generated values. The element-type is determined by the
+parameter \code{element_expr}.
+}
 \description{
 Create lists of elements using an expressive syntax. Internally nested
 for-loops are created and compiled that generate the list.
-}
-\details{
-The API can still change and it is recommend to only use the package when
-you can tolerate changes in the API (e.g. in interactive analyses).
 }
 \examples{
 gen_list(c(x, y), x = 1:10, y = 1:10, x + y == 10, x < y)
