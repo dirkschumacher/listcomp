@@ -9,8 +9,9 @@ gen_list(element_expr, ..., .compile = TRUE)
 \arguments{
 \item{element_expr}{an expression that will be collected}
 
-\item{...}{either logical expressions or named parameters with an iterable
-sequence.}
+\item{...}{either a logical expression that returns a length 1 result.
+A named list of equal length sequences that are iterated over
+in parallel or a named parameter with an iterable sequence.}
 
 \item{.compile}{compile the resulting for loop to bytecode befor eval}
 }
@@ -26,4 +27,8 @@ you can tolerate changes in the API (e.g. in interactive analyses).
 gen_list(c(x, y), x = 1:10, y = 1:10, x + y == 10, x < y)
 z <- 10
 gen_list(c(x, y), x = 1:10, y = 1:10, x + y == !!z, x < y)
+
+# it is also possible to iterate in parallel by passing a list of
+# sequences
+gen_list(c(x, y), list(x = 1:10, y = 1:10), (x + y) \%in\% c(4, 6))
 }

@@ -18,6 +18,7 @@ Suggests:
     testthat
 Imports: 
     rlang,
-    compiler
+    compiler,
+    digest
 URL: https://github.com/dirkschumacher/listcomp
 BugReports: https://github.com/dirkschumacher/listcomp/issues
