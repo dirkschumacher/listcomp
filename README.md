@@ -5,10 +5,10 @@
 
 <!-- badges: start -->
 
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![R build
 status](https://github.com/dirkschumacher/listcomp/workflows/R-CMD-check/badge.svg)](https://github.com/dirkschumacher/listcomp/actions)
+[![Lifecycle:
+maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 <!-- badges: end -->
 
 The package implements [list
@@ -134,9 +134,9 @@ lst_verbose(c(i, j, k), list(i = 1:10, j = 1:10), k = 1:5, i < 3, k < 3)
 #>  [3] "    iter_____k <- 1:5"                                                                
 #>  [4] "    {"                                                                                
 #>  [5] "        parallel_seq <- list(i = 1:10, j = 1:10)"                                     
-#>  [6] "        for (iter_44e1d1cb0c49a3f735dc3c677be82a1f in seq_along(parallel_seq[[1]])) {"
-#>  [7] "            i <- parallel_seq[[\"i\"]][[iter_44e1d1cb0c49a3f735dc3c677be82a1f]]"      
-#>  [8] "            j <- parallel_seq[[\"j\"]][[iter_44e1d1cb0c49a3f735dc3c677be82a1f]]"      
+#>  [6] "        for (iter_ab682decff0104dd6628e0eca35869a2 in seq_along(parallel_seq[[1]])) {"
+#>  [7] "            i <- parallel_seq[[\"i\"]][[iter_ab682decff0104dd6628e0eca35869a2]]"      
+#>  [8] "            j <- parallel_seq[[\"j\"]][[iter_ab682decff0104dd6628e0eca35869a2]]"      
 #>  [9] "            for (k in iter_____k) {"                                                  
 #> [10] "                if (!(i < 3)) {"                                                      
 #> [11] "                  next"                                                               
@@ -170,10 +170,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a           45.09ms  58.41ms     15.8      112KB     1.97
-#> 2 b           12.35ms  14.62ms     60.3      112KB    11.7 
-#> 3 c          768.57ms 768.57ms      1.30      280B     9.11
-#> 4 d            1.93ms   2.28ms    392.        280B    10.0
+#> 1 a           39.86ms  42.43ms     22.9      112KB     3.82
+#> 2 b           11.79ms  13.04ms     68.0      112KB    12.0 
+#> 3 c          630.35ms 630.35ms      1.59      280B    11.1 
+#> 4 d            1.87ms   1.99ms    465.        280B    14.0
 ```
 
 How slow is it compared to a for loop and lapply for a very simple
@@ -197,10 +197,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          6.37   7.77       124.    56.7KB     14.1
-#> 2 b          1.04   1.18       768.      280B     13.2
-#> 3 c          0.792  0.918     1034.    15.8KB     29.5
-#> 4 d          0.437  0.489     1731.        0B     19.6
+#> 1 a          6.10   6.72       141.    56.7KB     16.7
+#> 2 b          1.03   1.14       814.      280B     14.9
+#> 3 c          0.782  0.892      945.    15.8KB     24.8
+#> 4 d          0.434  0.477     1881.        0B     21.9
 ```
 
 # Prior art
