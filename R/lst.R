@@ -8,14 +8,19 @@
 #' you can tolerate changes in the API (e.g. in interactive analyses).
 #'
 #' @param element_expr an expression that will be collected
-#' @param ... either logical expressions or named parameters with an iterable
-#'   sequence.
+#' @param ... either a logical expression that returns a length 1 result.
+#'   A named list of equal length sequences that are iterated over
+#'   in parallel or a named parameter with an iterable sequence.
 #' @param .compile compile the resulting for loop to bytecode befor eval
 #'
 #' @examples
 #' gen_list(c(x, y), x = 1:10, y = 1:10, x + y == 10, x < y)
 #' z <- 10
 #' gen_list(c(x, y), x = 1:10, y = 1:10, x + y == !!z, x < y)
+#'
+#' # it is also possible to iterate in parallel by passing a list of
+#' # sequences
+#' gen_list(c(x, y), list(x = 1:10, y = 1:10), (x + y) %in% c(4, 6))
 #' @import rlang
 #' @export
 gen_list <- function(element_expr, ..., .compile = TRUE) {
@@ -29,49 +34,29 @@ gen_list <- function(element_expr, ..., .compile = TRUE) {
 }
 
 translate <- function(element_expr, quosures) {
-  quo_names <- names(quosures)
-  is_index <- quo_names != ""
+  quosures <- classify_quosures(quosures)
   start_val <- get_expr(
     quo(res_____[[length(res_____) + 1]] <- !!get_expr(element_expr))
   )
-  has_symbols <- vapply(quosures, function(x) {
-    length(all.vars(get_expr(x))) > 0
-  }, logical(1L))
-  for_symbol <- as.symbol("for") # to prevent a codetools bug
   loop <- Reduce(
-    f = function(acc, i) {
-      quosure <- get_expr(quosures[[i]])
-      name <- names(quosures)[[i]]
-      make_for <- name != ""
-      if (make_for) {
-        iter_name <- if (has_symbols[[i]]) {
-          quosure
-        } else {
-          iter_symbol_name(name)
-        }
-        get_expr(quo(
-          (!!for_symbol)(!!as.symbol(name), !!iter_name, !!acc)
-        ))
-      } else {
-        get_expr(quo({
-          if (!((!!quosure))) {
-            !!next_call # for R CMD check
-          }
-          !!acc
-        }))
-      }
+    f = function(acc, el) {
+      generate_code(acc, el)
     },
-    x = rev(seq_along(quosures)),
+    x = rev(quosures),
     init = start_val
   )
-  assignment_symbol <- as.symbol("<-") # for codetools
   top_level_assignments <- mapply(
-    function(val, name) {
-      s <- iter_symbol_name(name)
-      get_expr(quo((!!assignment_symbol)(!!s, !!get_expr(val))))
+    function(val) {
+      s <- iter_symbol_name(val$name)
+      get_expr(quo((!!assignment_symbol)(!!s, !!get_expr(val$quosure))))
     },
-    quosures[!has_symbols & is_index],
-    quo_names[!has_symbols & is_index]
+    Filter(function(x) !x$has_symbols && x$is_index, quosures),
+    SIMPLIFY = FALSE,
+    USE.NAMES = FALSE
+  )
+  top_level_checks <- Filter(
+    function(x) inherits(x, "parallel_sequence"),
+    quosures
   )
   loop <- get_expr(loop)
   get_expr(
@@ -84,7 +69,85 @@ translate <- function(element_expr, quosures) {
   )
 }
 
+
+classify_quosures <- function(quosures) {
+  mapply(
+    classify_quosure, quosures, names(quosures),
+    SIMPLIFY = FALSE,
+    USE.NAMES = FALSE
+  )
+}
+
+classify_quosure <- function(x, name) {
+  type <- "named_sequence"
+  if (name == "") {
+    expr <- get_expr(x)
+    if (length(expr) >= 1 && expr[[1]] == "list") {
+      type <- "parallel_sequence"
+    } else {
+      type <- "condition"
+    }
+  }
+  structure(
+    list(
+      quosure = x,
+      name = name,
+      has_symbols = length(all.vars(get_expr(x))) > 0,
+      is_index = name != ""
+    ),
+    class = type
+  )
+}
+
+generate_code <- function(acc, el) UseMethod("generate_code", el)
+
+generate_code.named_sequence <- function(acc, el) {
+  iter_name <- if (el$has_symbols) {
+    get_expr(el$quosure)
+  } else {
+    iter_symbol_name(el$name)
+  }
+  get_expr(quo(
+    (!!for_symbol)(!!as.symbol(el$name), !!iter_name, !!acc)
+  ))
+}
+
+generate_code.condition <- function(acc, el) {
+  get_expr(quo({
+    if (!((!!get_expr(el$quosure)))) {
+      !!next_call # for R CMD check
+    }
+    !!acc
+  }))
+}
+
+generate_code.parallel_sequence <- function(acc, el) {
+  names <- names(get_expr(el$quosure))[-1]
+  stopifnot(all(names != ""))
+  iter_name <- sym(paste0("iter_", digest::digest(el$quosure)))
+  local_variables <- lapply(names, function(name) {
+    var <- as.symbol(name)
+    get_expr(
+      quo(
+        (!!assignment_symbol)(
+          !!var,
+          parallel_seq[[!!name]][[!!iter_name]]
+        )
+      )
+    )
+  })
+  get_expr(quo({
+    parallel_seq <- !!get_expr(el$quosure)
+    (!!for_symbol)(!!iter_name, seq_along(parallel_seq[[1]]), {
+      !!!local_variables
+      !!acc
+    })
+  }))
+}
+
 next_call <- parse(text = "next")[[1]]
+for_symbol <- as.symbol("for") # to prevent a codetools bug
+assignment_symbol <- as.symbol("<-") # for codetools
 
 iter_symbol_name <- function(name) {
   as.symbol(paste0("iter_____", name))

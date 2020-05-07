@@ -108,6 +108,53 @@ gen_list(c(x, y), x = 1:!!z, y = x:5, x < 2)
 #> [1] 1 5
 ```
 
+It also supports parallel iteration by passing a list of named sequences
+
+``` r
+gen_list(c(i, j, k), list(i = 1:10, j = 1:10), k = 1:5, i < 3, k < 3)
+#> [[1]]
+#> [1] 1 1 1
+#> 
+#> [[2]]
+#> [1] 1 1 2
+#> 
+#> [[3]]
+#> [1] 2 2 1
+#> 
+#> [[4]]
+#> [1] 2 2 2
+```
+
+The code then looks like this:
+
+``` r
+lst_verbose(c(i, j, k), list(i = 1:10, j = 1:10), k = 1:5, i < 3, k < 3)
+#>  [1] "{"                                                                                    
+#>  [2] "    res_____ <- list()"                                                               
+#>  [3] "    iter_____k <- 1:5"                                                                
+#>  [4] "    {"                                                                                
+#>  [5] "        parallel_seq <- list(i = 1:10, j = 1:10)"                                     
+#>  [6] "        for (iter_44e1d1cb0c49a3f735dc3c677be82a1f in seq_along(parallel_seq[[1]])) {"
+#>  [7] "            i <- parallel_seq[[\"i\"]][[iter_44e1d1cb0c49a3f735dc3c677be82a1f]]"      
+#>  [8] "            j <- parallel_seq[[\"j\"]][[iter_44e1d1cb0c49a3f735dc3c677be82a1f]]"      
+#>  [9] "            for (k in iter_____k) {"                                                  
+#> [10] "                if (!(i < 3)) {"                                                      
+#> [11] "                  next"                                                               
+#> [12] "                }"                                                                    
+#> [13] "                {"                                                                    
+#> [14] "                  if (!(k < 3)) {"                                                    
+#> [15] "                    next"                                                             
+#> [16] "                  }"                                                                  
+#> [17] "                  res_____[[length(res_____) + 1]] <- c(i, j, "                       
+#> [18] "                    k)"                                                               
+#> [19] "                }"                                                                    
+#> [20] "            }"                                                                        
+#> [21] "        }"                                                                            
+#> [22] "    }"                                                                                
+#> [23] "    res_____"                                                                         
+#> [24] "}"
+```
+
 It is quite fast, but the order of filter conditions also greatly
 determines the execution time. Sometimes, ahead of time compiling is
 slower than running it right away.
@@ -123,10 +170,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a            39.6ms  49.32ms     19.9      116KB     3.99
-#> 2 b              12ms  13.95ms     63.3      116KB     9.88
-#> 3 c           659.8ms 659.78ms      1.52      280B    10.6 
-#> 4 d             1.7ms   1.84ms    459.        280B    12.0
+#> 1 a           45.09ms  58.41ms     15.8      112KB     1.97
+#> 2 b           12.35ms  14.62ms     60.3      112KB    11.7 
+#> 3 c          768.57ms 768.57ms      1.30      280B     9.11
+#> 4 d            1.93ms   2.28ms    392.        280B    10.0
 ```
 
 How slow is it compared to a for loop and lapply for a very simple
@@ -150,10 +197,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          6.19   7.17       101.    59.2KB     11.2
-#> 2 b          0.969  1.03       826.      280B     15.9
-#> 3 c          0.586  0.634     1417.    88.1KB     20.0
-#> 4 d          3.84   4.09       202.    44.4KB     11.0
+#> 1 a          6.37   7.77       124.    56.7KB     14.1
+#> 2 b          1.04   1.18       768.      280B     13.2
+#> 3 c          0.792  0.918     1034.    15.8KB     29.5
+#> 4 d          0.437  0.489     1731.        0B     19.6
 ```
 
 # Prior art
