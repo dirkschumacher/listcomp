@@ -28,6 +28,10 @@ The package implements [list comprehensions](https://en.wikipedia.org/wiki/List_
 remotes::install_github("dirkschumacher/listcomp")
 ```
 
+``` r
+install.packages("listcomp")
+```
+
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
