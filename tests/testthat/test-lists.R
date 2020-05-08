@@ -37,3 +37,29 @@ test_that("only if", {
   expect_equal(res, list(42))
   expect_error(gen_list(42, 5 > 10), "loop")
 })
+
+test_that("one can iterate in parallel", {
+  res <- gen_list(c(i, j, k), list(i = 1:10, j = 1:10), k = 1:5)
+  expect_equal(length(res), 10 * 5)
+  for (i in 1:10) {
+    for (k in 1:5) {
+      expect_true(list(c(i, i, k)) %in% res)
+    }
+  }
+})
+
+test_that("parallel sequences can depend on iterators", {
+  res <- gen_list(c(i, j, k), k = 1:5, list(i = k:10, j = k:10))
+  expect_equal(length(res), 40)
+  for (k in 1:5) {
+    for (i in k:10) {
+      expect_true(list(c(i, i, k)) %in% res)
+    }
+  }
+})
+
+# test_that("parallel lists need to have equal length", {
+#   expect_error(
+#     gen_list(c(i, j, k), list(i = 1:5, j = 1:10), k = 1:5), "length"
+#   )
+# })
