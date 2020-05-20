@@ -124,7 +124,8 @@ generate_code.condition <- function(acc, el) {
 generate_code.parallel_sequence <- function(acc, el) {
   names <- names(get_expr(el$quosure))[-1]
   stopifnot(all(names != ""))
-  iter_name <- sym(paste0("iter_", digest::digest(el$quosure)))
+  hash <- digest::digest(el$quosure, algo = "xxhash32")
+  iter_name <- sym(paste0("iter_", hash))
   local_variables <- lapply(names, function(name) {
     var <- as.symbol(name)
     get_expr(

@@ -135,29 +135,29 @@ The code then looks like this:
 
 ``` r
 lst_verbose(c(i, j, k), list(i = 1:10, j = 1:10), k = 1:5, i < 3, k < 3)
-#>  [1] "{"                                                                                    
-#>  [2] "    res_____ <- list()"                                                               
-#>  [3] "    iter_____k <- 1:5"                                                                
-#>  [4] "    {"                                                                                
-#>  [5] "        parallel_seq <- list(i = 1:10, j = 1:10)"                                     
-#>  [6] "        for (iter_df043941a2fac5d54cc62d379abbb388 in seq_along(parallel_seq[[1]])) {"
-#>  [7] "            i <- parallel_seq[[\"i\"]][[iter_df043941a2fac5d54cc62d379abbb388]]"      
-#>  [8] "            j <- parallel_seq[[\"j\"]][[iter_df043941a2fac5d54cc62d379abbb388]]"      
-#>  [9] "            for (k in iter_____k) {"                                                  
-#> [10] "                if (!(i < 3)) {"                                                      
-#> [11] "                  next"                                                               
-#> [12] "                }"                                                                    
-#> [13] "                {"                                                                    
-#> [14] "                  if (!(k < 3)) {"                                                    
-#> [15] "                    next"                                                             
-#> [16] "                  }"                                                                  
-#> [17] "                  res_____[[length(res_____) + 1]] <- c(i, j, "                       
-#> [18] "                    k)"                                                               
-#> [19] "                }"                                                                    
-#> [20] "            }"                                                                        
-#> [21] "        }"                                                                            
-#> [22] "    }"                                                                                
-#> [23] "    res_____"                                                                         
+#>  [1] "{"                                                             
+#>  [2] "    res_____ <- list()"                                        
+#>  [3] "    iter_____k <- 1:5"                                         
+#>  [4] "    {"                                                         
+#>  [5] "        parallel_seq <- list(i = 1:10, j = 1:10)"              
+#>  [6] "        for (iter_ed08e98e in seq_along(parallel_seq[[1]])) {" 
+#>  [7] "            i <- parallel_seq[[\"i\"]][[iter_ed08e98e]]"       
+#>  [8] "            j <- parallel_seq[[\"j\"]][[iter_ed08e98e]]"       
+#>  [9] "            for (k in iter_____k) {"                           
+#> [10] "                if (!(i < 3)) {"                               
+#> [11] "                  next"                                        
+#> [12] "                }"                                             
+#> [13] "                {"                                             
+#> [14] "                  if (!(k < 3)) {"                             
+#> [15] "                    next"                                      
+#> [16] "                  }"                                           
+#> [17] "                  res_____[[length(res_____) + 1]] <- c(i, j, "
+#> [18] "                    k)"                                        
+#> [19] "                }"                                             
+#> [20] "            }"                                                 
+#> [21] "        }"                                                     
+#> [22] "    }"                                                         
+#> [23] "    res_____"                                                  
 #> [24] "}"
 ```
 
@@ -176,10 +176,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a           40.85ms  44.63ms     22.1      112KB     3.68
-#> 2 b           12.92ms  16.83ms     55.0      112KB     9.82
-#> 3 c          605.85ms 605.85ms      1.65      280B    11.6 
-#> 4 d            1.88ms   2.14ms    434.        280B    12.0
+#> 1 a           40.72ms  43.81ms     21.7      112KB     3.95
+#> 2 b              14ms  26.49ms     34.5      112KB     5.75
+#> 3 c          850.76ms 850.76ms      1.18      280B     8.23
+#> 4 d            1.88ms   2.34ms    368.        280B     9.99
 ```
 
 How slow is it compared to a for loop and lapply for a very simple
@@ -203,10 +203,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          6.44   7.23       123.    56.7KB     14.4
-#> 2 b          1.03   1.25       732.      280B     12.7
-#> 3 c          0.787  0.900      986.    15.8KB     27.3
-#> 4 d          0.433  0.461     2077.        0B     21.7
+#> 1 a          6.22  12.2        76.0    56.7KB     9.22
+#> 2 b          1.04   1.37      531.       280B     8.33
+#> 3 c          0.789  0.965     835.     15.8KB    23.1 
+#> 4 d          0.434  0.462    2030.         0B    24.0
 ```
 
 # Prior art
