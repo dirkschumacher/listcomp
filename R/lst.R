@@ -35,40 +35,45 @@ gen_list <- function(element_expr, ..., .compile = TRUE) {
 
 translate <- function(element_expr, quosures) {
   quosures <- classify_quosures(quosures)
+  result_variable <- generate_new_variable(element_expr)
   start_val <- get_expr(
-    quo(res_____[[length(res_____) + 1]] <- !!get_expr(element_expr))
+    quo(
+      `<-`(
+        (!!result_variable)[[length(!!result_variable) + 1]],
+        !!get_expr(element_expr)
+      )
+    )
   )
-  loop <- Reduce(
+  loop_code <- Reduce(
     f = function(acc, el) {
       generate_code(acc, el)
     },
     x = rev(quosures),
     init = start_val
   )
-  top_level_assignments <- mapply(
+  top_level_assignments <- generate_top_level_assignments(quosures)
+  loop_code <- get_expr(loop_code)
+  get_expr(
+    quo({
+      !!result_variable <- list()
+      !!!top_level_assignments
+      !!loop_code
+      !!result_variable
+    })
+  )
+}
+
+generate_top_level_assignments <- function(quosures) {
+  mapply(
     function(val) {
-      s <- iter_symbol_name(val$name)
+      s <- generate_new_variable(iter_symbol_name(val$name))
       get_expr(quo((!!assignment_symbol)(!!s, !!get_expr(val$quosure))))
     },
     Filter(function(x) !x$has_symbols && x$is_index, quosures),
     SIMPLIFY = FALSE,
     USE.NAMES = FALSE
   )
-  top_level_checks <- Filter(
-    function(x) inherits(x, "parallel_sequence"),
-    quosures
-  )
-  loop <- get_expr(loop)
-  get_expr(
-    quo({
-      res_____ <- list()
-      !!!top_level_assignments
-      !!loop
-      res_____
-    })
-  )
 }
-
 
 classify_quosures <- function(quosures) {
   mapply(
@@ -105,7 +110,7 @@ generate_code.named_sequence <- function(acc, el) {
   iter_name <- if (el$has_symbols) {
     get_expr(el$quosure)
   } else {
-    iter_symbol_name(el$name)
+    iter_name <- generate_new_variable(iter_symbol_name(el$name))
   }
   get_expr(quo(
     (!!for_symbol)(!!as.symbol(el$name), !!iter_name, !!acc)
@@ -124,8 +129,7 @@ generate_code.condition <- function(acc, el) {
 generate_code.parallel_sequence <- function(acc, el) {
   names <- names(get_expr(el$quosure))[-1]
   stopifnot(all(names != ""))
-  hash <- digest::digest(el$quosure, algo = "xxhash32")
-  iter_name <- sym(paste0("iter_", hash))
+  iter_name <- generate_new_variable(list("pseq", el$quosure))
   local_variables <- lapply(names, function(name) {
     var <- as.symbol(name)
     get_expr(
@@ -146,10 +150,17 @@ generate_code.parallel_sequence <- function(acc, el) {
   }))
 }
 
-next_call <- parse(text = "next")[[1]]
-for_symbol <- as.symbol("for") # to prevent a codetools bug
-assignment_symbol <- as.symbol("<-") # for codetools
+generate_new_variable <- function(seed_code) {
+  sym(paste0(
+    "var_listcomp____",
+    digest::digest(seed_code, algo = "xxhash32")
+  ))
+}
 
 iter_symbol_name <- function(name) {
   as.symbol(paste0("iter_____", name))
 }
+
+next_call <- parse(text = "next")[[1]]
+for_symbol <- as.symbol("for") # to prevent a codetools bug
+assignment_symbol <- as.symbol("<-") # for codetools
