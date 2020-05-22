@@ -9,6 +9,11 @@
 #'   in parallel or a named parameter with an iterable sequence.
 #' @param .compile compile the resulting for loop to bytecode befor eval
 #'
+#' @details
+#'
+#' For parallel iterations all elements in the \code{list} need to be of
+#' equal length. This is not checked at runtime at the moment.
+#'
 #' @return
 #' A list of all generated values. The element-type is determined by the
 #' parameter \code{element_expr}.
@@ -21,6 +26,7 @@
 #' # it is also possible to iterate in parallel by passing a list of
 #' # sequences
 #' gen_list(c(x, y), list(x = 1:10, y = 1:10), (x + y) %in% c(4, 6))
+#'
 #' @import rlang
 #' @export
 gen_list <- function(element_expr, ..., .compile = TRUE) {

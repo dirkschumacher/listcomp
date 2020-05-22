@@ -68,8 +68,8 @@ test_that("initial expression can be very long", {
   expect_equal(res, list(1, 2))
 })
 
-# test_that("parallel lists need to have equal length", {
-#   expect_error(
-#     gen_list(c(i, j, k), list(i = 1:5, j = 1:10), k = 1:5), "length"
-#   )
-# })
+#test_that("parallel lists need to have equal length", {
+#  expect_error(
+#    gen_list(c(i, j, k), list(i = 1:5, j = 1:10), k = 1:5), "length"
+#  )
+#})

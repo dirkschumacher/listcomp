@@ -23,6 +23,10 @@ parameter \code{element_expr}.
 Create lists of elements using an expressive syntax. Internally nested
 for-loops are created and compiled that generate the list.
 }
+\details{
+For parallel iterations all elements in the \code{list} need to be of
+equal length. This is not checked at runtime at the moment.
+}
 \examples{
 gen_list(c(x, y), x = 1:10, y = 1:10, x + y == 10, x < y)
 z <- 10
@@ -31,4 +35,5 @@ gen_list(c(x, y), x = 1:10, y = 1:10, x + y == !!z, x < y)
 # it is also possible to iterate in parallel by passing a list of
 # sequences
 gen_list(c(x, y), list(x = 1:10, y = 1:10), (x + y) \%in\% c(4, 6))
+
 }
