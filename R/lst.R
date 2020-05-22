@@ -36,14 +36,12 @@ gen_list <- function(element_expr, ..., .compile = TRUE) {
 translate <- function(element_expr, quosures) {
   quosures <- classify_quosures(quosures)
   result_variable <- generate_new_variable(element_expr)
-  start_val <- get_expr(
-    quo(
-      `<-`(
-        (!!result_variable)[[length(!!result_variable) + 1]],
-        !!get_expr(element_expr)
-      )
+  start_val <- get_expr(quo(
+    `<-`(
+      `[[`(!!result_variable, length(!!result_variable) + 1),
+      !!get_expr(element_expr)
     )
-  )
+  ))
   loop_code <- Reduce(
     f = function(acc, el) {
       generate_code(acc, el)
@@ -55,7 +53,7 @@ translate <- function(element_expr, quosures) {
   loop_code <- get_expr(loop_code)
   get_expr(
     quo({
-      !!result_variable <- list()
+      `<-`(!!result_variable, list())
       !!!top_level_assignments
       !!loop_code
       !!result_variable
@@ -164,3 +162,4 @@ iter_symbol_name <- function(name) {
 next_call <- parse(text = "next")[[1]]
 for_symbol <- as.symbol("for") # to prevent a codetools bug
 assignment_symbol <- as.symbol("<-") # for codetools
+globalVariables("!<-")
