@@ -7,4 +7,4 @@
 
 0 errors | 0 warnings | 0 notes
 
-* This adds a small new features and reorders code.
+* New feature and code improvements
