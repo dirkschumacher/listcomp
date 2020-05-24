@@ -2,3 +2,4 @@
 
 export(gen_list)
 import(rlang)
+importFrom(digest,digest)

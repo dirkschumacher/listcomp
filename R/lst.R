@@ -9,6 +9,11 @@
 #'   in parallel or a named parameter with an iterable sequence.
 #' @param .compile compile the resulting for loop to bytecode befor eval
 #'
+#' @details
+#'
+#' For parallel iterations all elements in the \code{list} need to be of
+#' equal length. This is not checked at runtime at the moment.
+#'
 #' @return
 #' A list of all generated values. The element-type is determined by the
 #' parameter \code{element_expr}.
@@ -21,7 +26,9 @@
 #' # it is also possible to iterate in parallel by passing a list of
 #' # sequences
 #' gen_list(c(x, y), list(x = 1:10, y = 1:10), (x + y) %in% c(4, 6))
+#'
 #' @import rlang
+#' @importFrom digest digest
 #' @export
 gen_list <- function(element_expr, ..., .compile = TRUE) {
   code <- translate(enquo(element_expr), enquos(...))
@@ -36,14 +43,12 @@ gen_list <- function(element_expr, ..., .compile = TRUE) {
 translate <- function(element_expr, quosures) {
   quosures <- classify_quosures(quosures)
   result_variable <- generate_new_variable(element_expr)
-  start_val <- get_expr(
-    quo(
-      `<-`(
-        (!!result_variable)[[length(!!result_variable) + 1]],
-        !!get_expr(element_expr)
-      )
+  start_val <- get_expr(quo(
+    (!!assignment_symbol)(
+      `[[`(!!result_variable, length(!!result_variable) + 1),
+      !!get_expr(element_expr)
     )
-  )
+  ))
   loop_code <- Reduce(
     f = function(acc, el) {
       generate_code(acc, el)
@@ -55,7 +60,7 @@ translate <- function(element_expr, quosures) {
   loop_code <- get_expr(loop_code)
   get_expr(
     quo({
-      !!result_variable <- list()
+      (!!assignment_symbol)(!!result_variable, list())
       !!!top_level_assignments
       !!loop_code
       !!result_variable
@@ -110,7 +115,7 @@ generate_code.named_sequence <- function(acc, el) {
   iter_name <- if (el$has_symbols) {
     get_expr(el$quosure)
   } else {
-    iter_name <- generate_new_variable(iter_symbol_name(el$name))
+    generate_new_variable(iter_symbol_name(el$name))
   }
   get_expr(quo(
     (!!for_symbol)(!!as.symbol(el$name), !!iter_name, !!acc)
@@ -120,7 +125,7 @@ generate_code.named_sequence <- function(acc, el) {
 generate_code.condition <- function(acc, el) {
   get_expr(quo({
     if (!((!!get_expr(el$quosure)))) {
-      !!next_call # for R CMD check
+      !!next_call
     }
     !!acc
   }))
@@ -153,7 +158,7 @@ generate_code.parallel_sequence <- function(acc, el) {
 generate_new_variable <- function(seed_code) {
   sym(paste0(
     "var_listcomp____",
-    digest::digest(seed_code, algo = "xxhash32")
+    digest(seed_code, algo = "xxhash32")
   ))
 }
 
@@ -161,6 +166,7 @@ iter_symbol_name <- function(name) {
   as.symbol(paste0("iter_____", name))
 }
 
+# for codetools to prevent R CMD check warnings
 next_call <- parse(text = "next")[[1]]
-for_symbol <- as.symbol("for") # to prevent a codetools bug
-assignment_symbol <- as.symbol("<-") # for codetools
+for_symbol <- as.symbol("for")
+assignment_symbol <- as.symbol("<-")
