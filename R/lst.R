@@ -124,7 +124,7 @@ generate_code.named_sequence <- function(acc, el) {
 generate_code.condition <- function(acc, el) {
   get_expr(quo({
     if (!((!!get_expr(el$quosure)))) {
-      !!next_call # for R CMD check
+      !!next_call
     }
     !!acc
   }))
