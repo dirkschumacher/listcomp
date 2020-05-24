@@ -1,4 +1,4 @@
-# listcomp (development version)
+# listcomp 0.3.0
 
 * Parallel iterations are now possible by passing a named list of sequences.
 
