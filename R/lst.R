@@ -27,7 +27,7 @@
 #' # sequences
 #' gen_list(c(x, y), list(x = 1:10, y = 1:10), (x + y) %in% c(4, 6))
 #'
-#' @import rlang
+#' @import rlang digest
 #' @export
 gen_list <- function(element_expr, ..., .compile = TRUE) {
   code <- translate(enquo(element_expr), enquos(...))
@@ -157,7 +157,7 @@ generate_code.parallel_sequence <- function(acc, el) {
 generate_new_variable <- function(seed_code) {
   sym(paste0(
     "var_listcomp____",
-    digest::digest(seed_code, algo = "xxhash32")
+    digest(seed_code, algo = "xxhash32")
   ))
 }
 

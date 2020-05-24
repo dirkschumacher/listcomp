@@ -81,16 +81,16 @@ lst_verbose <- function(expr, ...) {
 }
 lst_verbose(c(x, y), x = 1:10, y = x:5, x < 2)
 #>  [1] "{"                                                                    
-#>  [2] "    var_listcomp____1dfca921 <- list()"                               
+#>  [2] "    var_listcomp____ee3cfa1f <- list()"                               
 #>  [3] "    var_listcomp____300f3ed8 <- 1:10"                                 
 #>  [4] "    for (x in var_listcomp____300f3ed8) for (y in x:5) {"             
 #>  [5] "        if (!(x < 2)) {"                                              
 #>  [6] "            next"                                                     
 #>  [7] "        }"                                                            
-#>  [8] "        var_listcomp____1dfca921[[length(var_listcomp____1dfca921) + "
+#>  [8] "        var_listcomp____ee3cfa1f[[length(var_listcomp____ee3cfa1f) + "
 #>  [9] "            1]] <- c(x, y)"                                           
 #> [10] "    }"                                                                
-#> [11] "    var_listcomp____1dfca921"                                         
+#> [11] "    var_listcomp____ee3cfa1f"                                         
 #> [12] "}"
 ```
 
@@ -137,13 +137,13 @@ The code then looks like this:
 ``` r
 lst_verbose(c(i, j, k), list(i = 1:10, j = 1:10), k = 1:5, i < 3, k < 3)
 #>  [1] "{"                                                                              
-#>  [2] "    var_listcomp____4feda89e <- list()"                                         
+#>  [2] "    var_listcomp____1c3f2d37 <- list()"                                         
 #>  [3] "    var_listcomp____41f11c1f <- 1:5"                                            
 #>  [4] "    {"                                                                          
 #>  [5] "        parallel_seq <- list(i = 1:10, j = 1:10)"                               
-#>  [6] "        for (var_listcomp____4609e0d2 in seq_along(parallel_seq[[1]])) {"       
-#>  [7] "            i <- parallel_seq[[\"i\"]][[var_listcomp____4609e0d2]]"             
-#>  [8] "            j <- parallel_seq[[\"j\"]][[var_listcomp____4609e0d2]]"             
+#>  [6] "        for (var_listcomp____e546bcdf in seq_along(parallel_seq[[1]])) {"       
+#>  [7] "            i <- parallel_seq[[\"i\"]][[var_listcomp____e546bcdf]]"             
+#>  [8] "            j <- parallel_seq[[\"j\"]][[var_listcomp____e546bcdf]]"             
 #>  [9] "            for (k in var_listcomp____41f11c1f) {"                              
 #> [10] "                if (!(i < 3)) {"                                                
 #> [11] "                  next"                                                         
@@ -152,13 +152,13 @@ lst_verbose(c(i, j, k), list(i = 1:10, j = 1:10), k = 1:5, i < 3, k < 3)
 #> [14] "                  if (!(k < 3)) {"                                              
 #> [15] "                    next"                                                       
 #> [16] "                  }"                                                            
-#> [17] "                  var_listcomp____4feda89e[[length(var_listcomp____4feda89e) + "
+#> [17] "                  var_listcomp____1c3f2d37[[length(var_listcomp____1c3f2d37) + "
 #> [18] "                    1]] <- c(i, j, k)"                                          
 #> [19] "                }"                                                              
 #> [20] "            }"                                                                  
 #> [21] "        }"                                                                      
 #> [22] "    }"                                                                          
-#> [23] "    var_listcomp____4feda89e"                                                   
+#> [23] "    var_listcomp____1c3f2d37"                                                   
 #> [24] "}"
 ```
 
@@ -177,10 +177,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a            43.6ms  45.13ms     21.6    179.1KB     3.92
-#> 2 b            13.7ms  16.82ms     56.6    179.1KB     9.75
-#> 3 c             644ms 643.98ms      1.55    67.6KB    10.9 
-#> 4 d             2.6ms   3.07ms    291.      67.6KB     9.98
+#> 1 a           41.37ms   43.8ms     22.4    179.1KB     3.74
+#> 2 b           12.59ms   13.4ms     65.0    179.1KB    11.8 
+#> 3 c          612.15ms  612.1ms      1.63    67.6KB    11.4 
+#> 4 d            2.46ms    2.6ms    361.      67.6KB    12.0
 ```
 
 How slow is it compared to a for loop and lapply for a very simple
@@ -204,10 +204,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          6.73   8.00       119.    89.5KB    14.6 
-#> 2 b          1.36   1.83       399.    33.1KB     8.48
-#> 3 c          0.788  0.924      784.    15.8KB    20.6 
-#> 4 d          0.433  0.475     1840.        0B    19.7
+#> 1 a          6.47   6.84       141.    89.5KB     16.8
+#> 2 b          1.34   1.43       667.    33.1KB     12.7
+#> 3 c          0.781  0.867     1128.    15.8KB     29.5
+#> 4 d          0.435  0.466     2069.        0B     24.1
 ```
 
 # Prior art
