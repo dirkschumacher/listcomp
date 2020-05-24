@@ -43,7 +43,7 @@ translate <- function(element_expr, quosures) {
   quosures <- classify_quosures(quosures)
   result_variable <- generate_new_variable(element_expr)
   start_val <- get_expr(quo(
-    `<-`(
+    (!!assignment_symbol)(
       `[[`(!!result_variable, length(!!result_variable) + 1),
       !!get_expr(element_expr)
     )
@@ -59,7 +59,7 @@ translate <- function(element_expr, quosures) {
   loop_code <- get_expr(loop_code)
   get_expr(
     quo({
-      `<-`(!!result_variable, list())
+      (!!assignment_symbol)(!!result_variable, list())
       !!!top_level_assignments
       !!loop_code
       !!result_variable
@@ -114,7 +114,7 @@ generate_code.named_sequence <- function(acc, el) {
   iter_name <- if (el$has_symbols) {
     get_expr(el$quosure)
   } else {
-    iter_name <- generate_new_variable(iter_symbol_name(el$name))
+    generate_new_variable(iter_symbol_name(el$name))
   }
   get_expr(quo(
     (!!for_symbol)(!!as.symbol(el$name), !!iter_name, !!acc)
@@ -165,7 +165,7 @@ iter_symbol_name <- function(name) {
   as.symbol(paste0("iter_____", name))
 }
 
+# for codetools to prevent R CMD check warnings
 next_call <- parse(text = "next")[[1]]
-for_symbol <- as.symbol("for") # to prevent a codetools bug
-assignment_symbol <- as.symbol("<-") # for codetools
-globalVariables("!<-")
+for_symbol <- as.symbol("for")
+assignment_symbol <- as.symbol("<-")
