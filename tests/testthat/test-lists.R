@@ -68,6 +68,18 @@ test_that("initial expression can be very long", {
   expect_equal(res, list(1, 2))
 })
 
+test_that("it works within a function", {
+  test <- function(expr, ...) {
+    expr <- rlang::enquo(expr)
+    dots <- rlang::enquos(...)
+    gen_list(!!expr, !!!dots)
+  }
+  limit <- 5
+  res <- test(x, x = 1:10, x <= limit)
+  expected <- gen_list(x, x = 1:10, x <= limit)
+  expect_equal(res, expected)
+})
+
 #test_that("parallel lists need to have equal length", {
 #  expect_error(
 #    gen_list(c(i, j, k), list(i = 1:5, j = 1:10), k = 1:5), "length"

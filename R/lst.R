@@ -8,6 +8,8 @@
 #'   A named list of equal length sequences that are iterated over
 #'   in parallel or a named parameter with an iterable sequence.
 #' @param .compile compile the resulting for loop to bytecode befor eval
+#' @param .env the parent environment in which all the elements are being
+#'   evaluated.
 #'
 #' @details
 #'
@@ -28,16 +30,16 @@
 #' gen_list(c(x, y), list(x = 1:10, y = 1:10), (x + y) %in% c(4, 6))
 #'
 #' @import rlang
-#' @importFrom digest digest
 #' @export
-gen_list <- function(element_expr, ..., .compile = TRUE) {
+gen_list <- function(element_expr, ...,
+                     .compile = TRUE, .env = parent.frame()) {
   code <- translate(enquo(element_expr), enquos(...))
   code <- if (.compile) {
     compiler::compile(code, env = caller_env())
   } else {
     code
   }
-  eval_bare(code, env = new_environment(parent = caller_env()))
+  eval_bare(code, env = new_environment(parent = .env))
 }
 
 translate <- function(element_expr, quosures) {
@@ -155,10 +157,11 @@ generate_code.parallel_sequence <- function(acc, el) {
   }))
 }
 
+#' @importFrom rlang hash
 generate_new_variable <- function(seed_code) {
   sym(paste0(
     "var_listcomp____",
-    digest(seed_code, algo = "xxhash32")
+    hash(seed_code)
   ))
 }
 
