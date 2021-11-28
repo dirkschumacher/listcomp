@@ -4,7 +4,7 @@
 \alias{gen_list}
 \title{List comprehensions}
 \usage{
-gen_list(element_expr, ..., .compile = TRUE)
+gen_list(element_expr, ..., .compile = TRUE, .env = parent.frame())
 }
 \arguments{
 \item{element_expr}{an expression that will be collected}
@@ -14,6 +14,9 @@ A named list of equal length sequences that are iterated over
 in parallel or a named parameter with an iterable sequence.}
 
 \item{.compile}{compile the resulting for loop to bytecode befor eval}
+
+\item{.env}{the parent environment in which all the elements are being
+evaluated.}
 }
 \value{
 A list of all generated values. The element-type is determined by the

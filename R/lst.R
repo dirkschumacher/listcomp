@@ -8,6 +8,8 @@
 #'   A named list of equal length sequences that are iterated over
 #'   in parallel or a named parameter with an iterable sequence.
 #' @param .compile compile the resulting for loop to bytecode befor eval
+#' @param .env the parent environment in which all the elements are being
+#'   evaluated.
 #'
 #' @details
 #'
@@ -29,14 +31,15 @@
 #'
 #' @import rlang
 #' @export
-gen_list <- function(element_expr, ..., .compile = TRUE) {
+gen_list <- function(element_expr, ...,
+                     .compile = TRUE, .env = parent.frame()) {
   code <- translate(enquo(element_expr), enquos(...))
   code <- if (.compile) {
     compiler::compile(code, env = caller_env())
   } else {
     code
   }
-  eval_bare(code, env = new_environment(parent = caller_env()))
+  eval_bare(code, env = new_environment(parent = .env))
 }
 
 translate <- function(element_expr, quosures) {
