@@ -35,7 +35,7 @@ gen_list <- function(element_expr, ...,
                      .compile = TRUE, .env = parent.frame()) {
   code <- translate(enquo(element_expr), enquos(...))
   code <- if (.compile) {
-    compiler::compile(code, env = caller_env())
+    compiler::compile(code, env = .env)
   } else {
     code
   }
