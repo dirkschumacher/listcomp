@@ -72,14 +72,11 @@ lst_verbose(c(i, j, k), list(i = 1:10, j = 1:10), k = 1:5, i < 3, k < 3)
 ```
 
 It is quite fast, but the order of filter conditions also greatly determines the execution time.
-Sometimes, ahead of time compiling is slower than running it right away.
 
 ```{r}
 bench::mark(
   a = gen_list(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y),
   b = gen_list(c(x, y), x = 1:100, x < 5, y = 1:100, y < 5, z = 1:100, z == x + y),
-  c = gen_list(c(x, y), x = 1:100, y = 1:100, z = 1:100, x < 5, y < 5, z == x + y, .compile = FALSE),
-  d = gen_list(c(x, y), x = 1:100, x < 5, y = 1:100, y < 5, z = 1:100, z == x + y, .compile = FALSE)
 )
 ```
 
@@ -88,7 +85,6 @@ How slow is it compared to a for loop and lapply for a very simple example?
 ```{r}
 bench::mark(
   a = gen_list(x * 2, x = 1:1000, x**2 < 100),
-  b = gen_list(x * 2, x = 1:1000, x**2 < 100, .compile = FALSE),
   c = lapply(Filter(function(x) x**2 < 100, 1:1000), function(x) x * 2),
   d = {
     res <- list()

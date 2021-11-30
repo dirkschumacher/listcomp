@@ -80,8 +80,18 @@ test_that("it works within a function", {
   expect_equal(res, expected)
 })
 
-#test_that("parallel lists need to have equal length", {
-#  expect_error(
-#    gen_list(c(i, j, k), list(i = 1:5, j = 1:10), k = 1:5), "length"
-#  )
-#})
+test_that("environments are correctly extracted", {
+  x <- gen_list(42)
+  expect_equal(x, list(42))
+  limit <- 5
+  offset <- 1
+  fun <- function(x) {
+    limit <- 7
+    gen_list(i, i = 1:10, !!enquo(x))
+  }
+  res <- fun(i < limit + offset)
+  expect_equal(
+    res,
+    gen_list(i, i = 1:10, i < 6)
+  )
+})
