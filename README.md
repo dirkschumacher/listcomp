@@ -81,16 +81,16 @@ lst_verbose <- function(expr, ...) {
 }
 lst_verbose(c(x, y), x = 1:10, y = x:5, x < 2)
 #>  [1] "{"                                                                                                                    
-#>  [2] "    var_listcomp____fdca0fc39dfd0f93b606bd1dff4b087f <- list()"                                                       
+#>  [2] "    var_listcomp____db6da411c5c0b7fb68806eab70cbca15 <- list()"                                                       
 #>  [3] "    var_listcomp____e914ec62bcf06fa4923666b0cb589de7 <- 1:10"                                                         
 #>  [4] "    for (x in var_listcomp____e914ec62bcf06fa4923666b0cb589de7) for (y in x:5) {"                                     
 #>  [5] "        if (!(x < 2)) {"                                                                                              
 #>  [6] "            next"                                                                                                     
 #>  [7] "        }"                                                                                                            
-#>  [8] "        var_listcomp____fdca0fc39dfd0f93b606bd1dff4b087f[[length(var_listcomp____fdca0fc39dfd0f93b606bd1dff4b087f) + "
+#>  [8] "        var_listcomp____db6da411c5c0b7fb68806eab70cbca15[[length(var_listcomp____db6da411c5c0b7fb68806eab70cbca15) + "
 #>  [9] "            1]] <- c(x, y)"                                                                                           
 #> [10] "    }"                                                                                                                
-#> [11] "    var_listcomp____fdca0fc39dfd0f93b606bd1dff4b087f"                                                                 
+#> [11] "    var_listcomp____db6da411c5c0b7fb68806eab70cbca15"                                                                 
 #> [12] "}"
 ```
 
@@ -137,13 +137,13 @@ The code then looks like this:
 ``` r
 lst_verbose(c(i, j, k), list(i = 1:10, j = 1:10), k = 1:5, i < 3, k < 3)
 #>  [1] "{"                                                                                                                              
-#>  [2] "    var_listcomp____73045fcad9af1e4985a9f0b28b6fe3ea <- list()"                                                                 
+#>  [2] "    var_listcomp____9d4199269e91ca79bb0e0f7fd46ea9fb <- list()"                                                                 
 #>  [3] "    var_listcomp____edc8004e1fc9172689566a16fc4a2cf6 <- 1:5"                                                                    
 #>  [4] "    {"                                                                                                                          
 #>  [5] "        parallel_seq <- list(i = 1:10, j = 1:10)"                                                                               
-#>  [6] "        for (var_listcomp____464cc2d80d894456c83c23cf50cc6e0a in seq_along(parallel_seq[[1]])) {"                               
-#>  [7] "            i <- parallel_seq[[\"i\"]][[var_listcomp____464cc2d80d894456c83c23cf50cc6e0a]]"                                     
-#>  [8] "            j <- parallel_seq[[\"j\"]][[var_listcomp____464cc2d80d894456c83c23cf50cc6e0a]]"                                     
+#>  [6] "        for (var_listcomp____ca49c60abe9df0ccd65068dce0f3206a in seq_along(parallel_seq[[1]])) {"                               
+#>  [7] "            i <- parallel_seq[[\"i\"]][[var_listcomp____ca49c60abe9df0ccd65068dce0f3206a]]"                                     
+#>  [8] "            j <- parallel_seq[[\"j\"]][[var_listcomp____ca49c60abe9df0ccd65068dce0f3206a]]"                                     
 #>  [9] "            for (k in var_listcomp____edc8004e1fc9172689566a16fc4a2cf6) {"                                                      
 #> [10] "                if (!(i < 3)) {"                                                                                                
 #> [11] "                  next"                                                                                                         
@@ -152,13 +152,13 @@ lst_verbose(c(i, j, k), list(i = 1:10, j = 1:10), k = 1:5, i < 3, k < 3)
 #> [14] "                  if (!(k < 3)) {"                                                                                              
 #> [15] "                    next"                                                                                                       
 #> [16] "                  }"                                                                                                            
-#> [17] "                  var_listcomp____73045fcad9af1e4985a9f0b28b6fe3ea[[length(var_listcomp____73045fcad9af1e4985a9f0b28b6fe3ea) + "
+#> [17] "                  var_listcomp____9d4199269e91ca79bb0e0f7fd46ea9fb[[length(var_listcomp____9d4199269e91ca79bb0e0f7fd46ea9fb) + "
 #> [18] "                    1]] <- c(i, j, k)"                                                                                          
 #> [19] "                }"                                                                                                              
 #> [20] "            }"                                                                                                                  
 #> [21] "        }"                                                                                                                      
 #> [22] "    }"                                                                                                                          
-#> [23] "    var_listcomp____73045fcad9af1e4985a9f0b28b6fe3ea"                                                                           
+#> [23] "    var_listcomp____9d4199269e91ca79bb0e0f7fd46ea9fb"                                                                           
 #> [24] "}"
 ```
 
@@ -177,10 +177,10 @@ bench::mark(
 #> # A tibble: 4 × 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a           16.49ms  17.68ms     55.9    172.1KB     37.9
-#> 2 b            4.08ms   4.42ms    194.     172.1KB     35.7
-#> 3 c          255.15ms 258.72ms      3.87    60.7KB     23.2
-#> 4 d          781.01µs 794.83µs   1161.      60.7KB     28.0
+#> 1 a           16.45ms  17.56ms     57.8    172.1KB     39.9
+#> 2 b            4.09ms   4.22ms    225.     172.1KB     35.8
+#> 3 c          273.85ms    275ms      3.64    60.7KB     21.8
+#> 4 d          827.46µs 862.85µs   1113.      60.7KB     28.0
 ```
 
 How slow is it compared to a for loop and lapply for a very simple
@@ -204,10 +204,10 @@ bench::mark(
 #> # A tibble: 4 × 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          2.02   2.08       479.    82.6KB     44.2
-#> 2 b          0.409  0.421     2360.    26.2KB     40.8
-#> 3 c          0.307  0.322     3067.    15.8KB     69.6
-#> 4 d          0.170  0.177     5570.        0B     56.7
+#> 1 a          1.99   2.07       480.    82.6KB     43.4
+#> 2 b          0.415  0.436     2280.    26.2KB     36.3
+#> 3 c          0.307  0.328     3037.    15.8KB     69.1
+#> 4 d          0.165  0.176     5601.        0B     54.1
 ```
 
 # Prior art
