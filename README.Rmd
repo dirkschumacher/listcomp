@@ -16,8 +16,8 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R build status](https://github.com/dirkschumacher/listcomp/workflows/R-CMD-check/badge.svg)](https://github.com/dirkschumacher/listcomp/actions)
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![CRAN status](https://www.r-pkg.org/badges/version/listcomp)](https://CRAN.R-project.org/package=listcomp)
+[![R-CMD-check](https://github.com/dirkschumacher/listcomp/workflows/R-CMD-check/badge.svg)](https://github.com/dirkschumacher/listcomp/actions)
 <!-- badges: end -->
 
 The package implements [list comprehensions](https://en.wikipedia.org/wiki/List_comprehension) as purely syntactic sugar with a minor runtime overhead. It constructs nested for-loops and executes the byte-compiled loops to collect the results.
