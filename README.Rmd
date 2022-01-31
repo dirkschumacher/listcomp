@@ -102,7 +102,7 @@ bench::mark(
 )
 ```
 
-# Prior and other art
+# Related packages
 
 * [lc](https://github.com/mailund/lc) Uses a similar syntax as `listcomp`
 * [comprehenr](https://github.com/gdemin/comprehenr) Uses a similar code generation approach as `listcomp` but with a different syntax.

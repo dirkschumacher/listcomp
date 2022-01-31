@@ -175,10 +175,10 @@ bench::mark(
 #> # A tibble: 4 × 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a           16.43ms  17.46ms     56.2      112KB     38.7
-#> 2 b            4.05ms   4.13ms    221.       112KB     35.8
-#> 3 c          270.72ms 271.41ms      3.68      280B     22.1
-#> 4 d          783.88µs 817.13µs   1162.        280B     28.0
+#> 1 a            16.5ms  17.61ms     56.8      112KB     39.2
+#> 2 b               4ms   4.17ms    217.       112KB     35.8
+#> 3 c           269.5ms 269.51ms      3.71      280B     22.3
+#> 4 d           785.5µs 811.88µs   1176.        280B     28.0
 ```
 
 How slow is it compared to a for loop and lapply for a very simple
@@ -202,13 +202,13 @@ bench::mark(
 #> # A tibble: 4 × 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          1.96   2.08       473.    56.7KB     43.7
-#> 2 b          0.389  0.414     2378.      280B     36.3
-#> 3 c          0.309  0.328     2988.    15.8KB     66.6
-#> 4 d          0.165  0.175     5625.        0B     54.1
+#> 1 a          1.97   2.05       464.    56.7KB     43.5
+#> 2 b          0.388  0.402     2462.      280B     36.2
+#> 3 c          0.308  0.325     3063.    15.8KB     68.9
+#> 4 d          0.165  0.174     5708.        0B     56.4
 ```
 
-# Prior and other art
+# Related packages
 
 -   [lc](https://github.com/mailund/lc) Uses a similar syntax as
     `listcomp`
