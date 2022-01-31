@@ -102,8 +102,9 @@ bench::mark(
 )
 ```
 
-# Prior art
+# Prior and other art
 
-* [lc](https://github.com/mailund/lc) Uses a similiar syntax as `complist`
-* [comprehenr](https://github.com/gdemin/comprehenr) Uses a similiar code generation approach as `complist` but with a different syntax.
-
+* [lc](https://github.com/mailund/lc) Uses a similar syntax as `listcomp`
+* [comprehenr](https://github.com/gdemin/comprehenr) Uses a similar code generation approach as `listcomp` but with a different syntax.
+* [listcomp](https://github.com/patrickroocks/listcompr) Uses a similar syntax as `listcomp` and offers special generator functions for lists, vectors, data.frames
+and matrices.
