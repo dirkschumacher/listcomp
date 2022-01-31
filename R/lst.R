@@ -45,7 +45,7 @@ gen_list <- function(element_expr, ...,
 
 translate <- function(element_expr, quosures) {
   quosures <- classify_quosures(quosures)
-  result_variable <- generate_new_variable(element_expr)
+  result_variable <- as.symbol(".lc_result")
   start_val <- get_expr(quo(
     (!!assignment_symbol)(
       `[[`(!!result_variable, length(!!result_variable) + 1),
@@ -74,7 +74,7 @@ translate <- function(element_expr, quosures) {
 generate_top_level_assignments <- function(quosures) {
   mapply(
     function(val) {
-      s <- generate_new_variable(iter_symbol_name(val$name))
+      s <- iter_symbol_name(val$name)
       get_expr(quo((!!assignment_symbol)(!!s, !!get_expr(val$quosure))))
     },
     Filter(function(x) !x$has_symbols && x$is_index, quosures),
@@ -118,7 +118,7 @@ generate_code.named_sequence <- function(acc, el) {
   iter_name <- if (el$has_symbols) {
     get_expr(el$quosure)
   } else {
-    generate_new_variable(iter_symbol_name(el$name))
+    iter_symbol_name(el$name)
   }
   get_expr(quo(
     (!!for_symbol)(!!as.symbol(el$name), !!iter_name, !!acc)
@@ -137,7 +137,7 @@ generate_code.condition <- function(acc, el) {
 generate_code.parallel_sequence <- function(acc, el) {
   names <- names(get_expr(el$quosure))[-1]
   stopifnot(all(names != ""))
-  iter_name <- generate_new_variable(list("pseq", el$quosure))
+  iter_name <- as.symbol(".lc_ps_it")
   local_variables <- lapply(names, function(name) {
     var <- as.symbol(name)
     get_expr(
@@ -158,15 +158,8 @@ generate_code.parallel_sequence <- function(acc, el) {
   }))
 }
 
-generate_new_variable <- function(seed_code) {
-  sym(paste0(
-    "var_listcomp____",
-    hash(seed_code)
-  ))
-}
-
 iter_symbol_name <- function(name) {
-  as.symbol(paste0("iter_____", name))
+  as.symbol(paste0(".lci_", name))
 }
 
 # for codetools to prevent R CMD check warnings
