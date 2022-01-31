@@ -45,12 +45,8 @@ gen_list <- function(element_expr, ...,
 
 translate <- function(element_expr, quosures) {
   quosures <- classify_quosures(quosures)
-  result_variable <- as.symbol(".lc_result")
   start_val <- get_expr(quo(
-    (!!assignment_symbol)(
-      `[[`(!!result_variable, length(!!result_variable) + 1),
-      !!get_expr(element_expr)
-    )
+    .lc_result[[length(.lc_result) + 1]] <- !!get_expr(element_expr)
   ))
   loop_code <- Reduce(
     f = function(acc, el) {
@@ -63,10 +59,10 @@ translate <- function(element_expr, quosures) {
   loop_code <- get_expr(loop_code)
   get_expr(
     quo({
-      (!!assignment_symbol)(!!result_variable, list())
+      .lc_result <- list()
       !!!top_level_assignments
       !!loop_code
-      !!result_variable
+      .lc_result
     })
   )
 }

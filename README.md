@@ -175,10 +175,10 @@ bench::mark(
 #> # A tibble: 4 × 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a           16.26ms   17.4ms     57.7      112KB     39.8
-#> 2 b            4.04ms    4.1ms    217.       112KB     35.8
-#> 3 c          266.88ms  266.9ms      3.75      280B     22.5
-#> 4 d          785.68µs  807.7µs   1183.        280B     28.0
+#> 1 a            16.5ms  17.61ms     56.8      112KB     39.2
+#> 2 b               4ms   4.17ms    217.       112KB     35.8
+#> 3 c           269.5ms 269.51ms      3.71      280B     22.3
+#> 4 d           785.5µs 811.88µs   1176.        280B     28.0
 ```
 
 How slow is it compared to a for loop and lapply for a very simple
@@ -202,15 +202,18 @@ bench::mark(
 #> # A tibble: 4 × 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          1.96   2.04       485.    56.7KB     46.1
-#> 2 b          0.388  0.398     2494.      280B     38.5
-#> 3 c          0.307  0.323     3093.    15.8KB     68.9
-#> 4 d          0.164  0.173     5739.        0B     54.1
+#> 1 a          1.97   2.05       464.    56.7KB     43.5
+#> 2 b          0.388  0.402     2462.      280B     36.2
+#> 3 c          0.308  0.325     3063.    15.8KB     68.9
+#> 4 d          0.165  0.174     5708.        0B     56.4
 ```
 
-# Prior art
+# Related packages
 
--   [lc](https://github.com/mailund/lc) Uses a similiar syntax as
-    `complist`
--   [comprehenr](https://github.com/gdemin/comprehenr) Uses a similiar
-    code generation approach as `complist` but with a different syntax.
+-   [lc](https://github.com/mailund/lc) Uses a similar syntax as
+    `listcomp`
+-   [comprehenr](https://github.com/gdemin/comprehenr) Uses a similar
+    code generation approach as `listcomp` but with a different syntax.
+-   [listcomp](https://github.com/patrickroocks/listcompr) Uses a
+    similar syntax as `listcomp` and offers special generator functions
+    for lists, vectors, data.frames and matrices.
