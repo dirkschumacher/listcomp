@@ -175,10 +175,10 @@ bench::mark(
 #> # A tibble: 4 × 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 a            16.5ms  17.61ms     56.8      112KB     39.2
-#> 2 b               4ms   4.17ms    217.       112KB     35.8
-#> 3 c           269.5ms 269.51ms      3.71      280B     22.3
-#> 4 d           785.5µs 811.88µs   1176.        280B     28.0
+#> 1 a           16.09ms  17.19ms     58.8      112KB     39.2
+#> 2 b            4.04ms   4.13ms    227.       112KB     35.9
+#> 3 c          273.06ms 273.08ms      3.66      280B     22.0
+#> 4 d          785.56µs 813.97µs   1182.        280B     28.0
 ```
 
 How slow is it compared to a for loop and lapply for a very simple
@@ -202,10 +202,10 @@ bench::mark(
 #> # A tibble: 4 × 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
-#> 1 a          1.97   2.05       464.    56.7KB     43.5
-#> 2 b          0.388  0.402     2462.      280B     36.2
-#> 3 c          0.308  0.325     3063.    15.8KB     68.9
-#> 4 d          0.165  0.174     5708.        0B     56.4
+#> 1 a          1.95   2.00       494.    56.7KB     45.8
+#> 2 b          0.390  0.404     2452.      280B     38.5
+#> 3 c          0.308  0.326     3037.    15.8KB     69.2
+#> 4 d          0.163  0.174     5705.        0B     56.4
 ```
 
 # Related packages
@@ -214,6 +214,6 @@ bench::mark(
     `listcomp`
 -   [comprehenr](https://github.com/gdemin/comprehenr) Uses a similar
     code generation approach as `listcomp` but with a different syntax.
--   [listcomp](https://github.com/patrickroocks/listcompr) Uses a
+-   [listcompr](https://github.com/patrickroocks/listcompr) Uses a
     similar syntax as `listcomp` and offers special generator functions
     for lists, vectors, data.frames and matrices.
