@@ -1,5 +1,7 @@
 # listcomp (development version)
 
+# listcomp 0.4.1
+
 * The symbols for the variables of the generated code are not generated using
   a hash function anymore. This greatly reduces memory consumption.
 
